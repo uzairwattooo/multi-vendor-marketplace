@@ -1,0 +1,48 @@
+{
+  "version": "7",
+  "dialect": "postgresql",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "7",
+      "when": 1784002132191,
+      "tag": "0000_nifty_mulholland_black",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1784014893237,
+      "tag": "0001_open_millenium_guard",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1784016037170,
+      "tag": "0002_lowly_trish_tilby",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1784048900625,
+      "tag": "0003_stale_lily_hollister",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1784109551580,
+      "tag": "0004_dazzling_lily_hollister",
+      "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1784110266180,
+      "tag": "0005_right_shape",
+      "breakpoints": true
+    }
+  ]
+}
