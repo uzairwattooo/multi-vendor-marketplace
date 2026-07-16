@@ -14,6 +14,8 @@ import {
     store,
 } from "@/db/schema";
 
+
+export const dynamic = "force-dynamic";
 type StorePageProps = {
     params: Promise<{
         slug: string;

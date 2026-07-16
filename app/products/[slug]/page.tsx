@@ -2,8 +2,6 @@ import Image from "next/image";
 import Link from "next/link";
 import { and, eq, sql } from "drizzle-orm";
 import { notFound } from "next/navigation";
-import { ShoppingCart } from "lucide-react";
-
 import { db } from "@/db";
 import {
     product,
@@ -13,9 +11,10 @@ import {
 import Navbar from "@/components/common/Navbar";
 import Footer from "@/components/common/Footer";
 import Container from "@/components/common/Container";
-import { Button } from "@/components/ui/button";
 import AddToCartButton from "@/components/marketplace/AddToCartButton";
 
+
+export const dynamic = "force-dynamic";
 type ProductDetailsPageProps = {
     params: Promise<{
         slug: string;

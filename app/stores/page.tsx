@@ -7,6 +7,7 @@ import StoreCard from "@/components/marketplace/StoreCard";
 import { db } from "@/db";
 import { product, store } from "@/db/schema";
 
+export const dynamic = "force-dynamic";
 type StoreRow = {
     id: string;
     name: string;

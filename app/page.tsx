@@ -34,6 +34,8 @@ import {
 } from "@/db/schema";
 import { cn } from "@/lib/utils";
 
+
+export const dynamic = "force-dynamic"; 
 const stats = [
   { value: "10K+", label: "Products" },
   { value: "2K+", label: "Trusted Sellers" },

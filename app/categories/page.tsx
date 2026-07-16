@@ -18,6 +18,9 @@ import {
     type LucideIcon,
 } from "lucide-react";
 
+
+export const dynamic = "force-dynamic";
+
 const categoryIconMap: Record<string, LucideIcon> = {
     electronics: Laptop,
     fashion: Shirt,
