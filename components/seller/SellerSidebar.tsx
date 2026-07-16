@@ -98,9 +98,11 @@ export default function SellerSidebar() {
                     const Icon = link.icon;
 
                     const active =
-                        pathname === link.href ||
-                        (link.href !== "/seller/dashboard" &&
-                            pathname.startsWith(link.href));
+                        link.href === "/"
+                            ? pathname === "/"
+                            : pathname === link.href ||
+                            (link.href !== "/seller/dashboard" &&
+                                pathname.startsWith(link.href));
 
                     return (
                         <Link
