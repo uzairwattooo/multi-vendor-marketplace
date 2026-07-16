@@ -1,14 +1,25 @@
-import { and, eq, desc } from "drizzle-orm";
+import { and, desc, eq } from "drizzle-orm";
 import { headers } from "next/headers";
 import { NextResponse } from "next/server";
 
 import { auth } from "@/lib/auth";
 import { db } from "@/db";
-import { category, inventory, product, productImage, store } from "@/db/schema";
+import {
+  category,
+  product,
+  productImage,
+  store,
+} from "@/db/schema";
+import { validateCsrf } from "@/lib/security/csrf";
 import { createSlug } from "@/lib/slug";
 import { createProductSchema } from "@/lib/validations/product";
 
 export async function POST(request: Request) {
+  const csrfCheck = validateCsrf(request);
+
+  if (!csrfCheck.success) {
+    return csrfCheck.response;
+  }
   try {
     const session = await auth.api.getSession({
       headers: await headers(),
@@ -58,8 +69,7 @@ export async function POST(request: Request) {
       );
     }
 
-    const body = await request.json();
-
+    const body: unknown = await request.json();
     const result = createProductSchema.safeParse(body);
 
     if (!result.success) {
@@ -151,6 +161,8 @@ export async function POST(request: Request) {
 
           stock: result.data.quantity,
           lowStockThreshold: result.data.lowStockThreshold,
+          featured: result.data.featured,
+
         })
         .returning({
           id: product.id,
@@ -202,13 +214,23 @@ export async function GET() {
     const session = await auth.api.getSession({
       headers: await headers(),
     });
-
     if (!session?.user) {
       return NextResponse.json(
         { message: "Authentication required" },
         { status: 401 },
       );
     }
+    if (session.user.role !== "seller") {
+      return NextResponse.json(
+        {
+          message: "Seller access required",
+        },
+        {
+          status: 403,
+        },
+      );
+    }
+
 
     const [sellerStore] = await db
       .select({

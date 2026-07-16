@@ -8,49 +8,56 @@ import {
 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
+import AddToCartButton from "./AddToCartButton";
+import type { MarketplaceProduct } from "@/types/product";
 
-type ProductCardProps = {
-    id: string;
-    title: string;
-    storeName: string;
-    price: number;
-    oldPrice?: number;
-    rating: number;
-    reviewCount: number;
+type ProductCardProps = MarketplaceProduct & {
     badge?: string;
     imageClassName?: string;
 };
 
 export default function ProductCard({
     id,
-    title,
+    name,
+    slug,
+    storeId,
     storeName,
     price,
-    oldPrice,
-    rating,
-    reviewCount,
+    salePrice,
+    stock,
+    image,
+    rating = 0,
+    reviewCount = 0,
     badge,
     imageClassName = "bg-gradient-to-br from-violet-100 to-violet-200",
 }: ProductCardProps) {
-    const handleAddToCart = () => {
-        console.log("Add product to cart:", id);
-    };
-
-    const handleWishlist = () => {
+    function handleWishlist() {
         console.log("Add product to wishlist:", id);
-    };
+    }
+
+    const displayPrice = salePrice ?? price;
 
     return (
         <article className="group overflow-hidden rounded-2xl border bg-card transition-all duration-300 hover:-translate-y-1 hover:shadow-lg">
-            <div className={`relative aspect-[4/3] overflow-hidden ${imageClassName}`}>
+            <div
+                className={`relative aspect-[4/3] overflow-hidden ${imageClassName}`}
+            >
                 <Link
-                    href={`/products/${id}`}
-                    aria-label={`View ${title}`}
+                    href={`/products/${slug}`}
+                    aria-label={`View ${name}`}
                     className="absolute inset-0"
                 >
-                    <div className="flex h-full items-center justify-center">
-                        <ShoppingCart className="size-14 text-primary/20 transition duration-300 group-hover:scale-110" />
-                    </div>
+                    {image ? (
+                        <img
+                            src={image}
+                            alt={name}
+                            className="h-full w-full object-cover transition duration-300 group-hover:scale-105"
+                        />
+                    ) : (
+                        <div className="flex h-full items-center justify-center">
+                            <ShoppingCart className="size-14 text-primary/20 transition duration-300 group-hover:scale-110" />
+                        </div>
+                    )}
                 </Link>
 
                 {badge && (
@@ -72,9 +79,9 @@ export default function ProductCard({
             </div>
 
             <div className="p-5">
-                <Link href={`/products/${id}`}>
+                <Link href={`/products/${slug}`}>
                     <h3 className="line-clamp-2 min-h-12 text-base font-semibold transition hover:text-primary">
-                        {title}
+                        {name}
                     </h3>
                 </Link>
 
@@ -96,24 +103,30 @@ export default function ProductCard({
 
                 <div className="mt-4 flex items-center gap-2">
                     <span className="text-lg font-bold">
-                        Rs. {price.toLocaleString()}
+                        Rs. {displayPrice.toLocaleString()}
                     </span>
 
-                    {oldPrice && (
+                    {salePrice && (
                         <span className="text-sm text-muted-foreground line-through">
-                            Rs. {oldPrice.toLocaleString()}
+                            Rs. {price.toLocaleString()}
                         </span>
                     )}
                 </div>
 
-                <Button
-                    type="button"
-                    onClick={handleAddToCart}
-                    className="mt-5 w-full"
-                >
-                    <ShoppingCart className="size-4" />
-                    Add to Cart
-                </Button>
+                <div className="mt-4">
+                    <AddToCartButton
+                        product={{
+                            productId: id,
+                            name,
+                            slug,
+                            image,
+                            price: displayPrice,
+                            stock,
+                            storeId,
+                            storeName,
+                        }}
+                    />
+                </div>
             </div>
         </article>
     );

@@ -9,7 +9,6 @@ if (!supabaseUrl || !supabaseKey) {
         "Supabase environment variables are missing",
     );
 }
-
 export const supabase = createClient(
     supabaseUrl,
     supabaseKey,

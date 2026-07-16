@@ -12,47 +12,63 @@ import {
     Settings,
     ShoppingBag,
     Store,
+    House,
 } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 
 const links = [
     {
+        id: "dashboard",
         name: "Dashboard",
         href: "/seller/dashboard",
         icon: LayoutDashboard,
     },
+
     {
+        id: "products",
         name: "Products",
         href: "/seller/products",
         icon: Package,
     },
     {
+        id: "addproducts",
         name: "Add Product",
         href: "/seller/products/new",
         icon: Plus,
     },
     {
+        id: "orders",
         name: "Orders",
-        href: "#",
+        href: "/seller/orders",
         icon: ShoppingBag,
     },
     {
+        id: "inventory",
         name: "Inventory",
         href: "/seller/inventory",
         icon: Boxes,
     },
     {
+        id: "analytics",
         name: "Analytics",
         href: "#",
         icon: BarChart3,
     },
     {
+        id: "payouts",
         name: "Payouts",
         href: "#",
         icon: CreditCard,
     },
     {
+        id: "home",
+        name: "Home",
+        href: "/",
+        icon: House,
+    },
+    {
+        id: "settings",
         name: "Store Settings",
         href: "#",
         icon: Settings,
@@ -88,7 +104,7 @@ export default function SellerSidebar() {
 
                     return (
                         <Link
-                            key={link.href}
+                            key={link.id}
                             href={link.href}
                             className={cn(
                                 "flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium text-zinc-400 transition",

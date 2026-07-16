@@ -1,11 +1,18 @@
 import { and, eq } from "drizzle-orm";
 import { headers } from "next/headers";
 import { NextResponse } from "next/server";
+import { validateCsrf } from "@/lib/security/csrf";
 
 import { auth } from "@/lib/auth";
 import { db } from "@/db";
 import { product, store } from "@/db/schema";
 import { createProductSchema } from "@/lib/validations/product";
+
+type RouteContext = {
+    params: Promise<{
+        productId: string;
+    }>;
+};
 
 async function getCurrentSeller() {
     const session = await auth.api.getSession({
@@ -50,12 +57,8 @@ async function getCurrentSeller() {
 }
 
 export async function GET(
-    request: Request,
-    {
-        params,
-    }: {
-        params: Promise<{ productId: string }>;
-    }
+    _request: Request,
+    context: RouteContext,
 ) {
     try {
         const seller = await getCurrentSeller();
@@ -64,7 +67,7 @@ export async function GET(
             return seller.error;
         }
 
-        const { productId } = await params;
+        const { productId } = await context.params;
 
         const [currentProduct] = await db
             .select()
@@ -72,8 +75,11 @@ export async function GET(
             .where(
                 and(
                     eq(product.id, productId),
-                    eq(product.storeId, seller.sellerStore.id)
-                )
+                    eq(
+                        product.storeId,
+                        seller.sellerStore.id,
+                    ),
+                ),
             )
             .limit(1);
 
@@ -84,7 +90,7 @@ export async function GET(
                 },
                 {
                     status: 404,
-                }
+                },
             );
         }
 
@@ -98,18 +104,20 @@ export async function GET(
             },
             {
                 status: 500,
-            }
+            },
         );
     }
 }
 export async function PATCH(
     request: Request,
-    {
-        params,
-    }: {
-        params: Promise<{ productId: string }>;
-    }
+    context: RouteContext,
 ) {
+    const csrfCheck = validateCsrf(request);
+
+    if (!csrfCheck.success) {
+        return csrfCheck.response;
+    }
+
     try {
         const seller = await getCurrentSeller();
 
@@ -117,7 +125,7 @@ export async function PATCH(
             return seller.error;
         }
 
-        const { productId } = await params;
+        const { productId } = await context.params;
 
         const [existingProduct] = await db
             .select()
@@ -125,8 +133,11 @@ export async function PATCH(
             .where(
                 and(
                     eq(product.id, productId),
-                    eq(product.storeId, seller.sellerStore.id)
-                )
+                    eq(
+                        product.storeId,
+                        seller.sellerStore.id,
+                    ),
+                ),
             )
             .limit(1);
 
@@ -137,23 +148,25 @@ export async function PATCH(
                 },
                 {
                     status: 404,
-                }
+                },
             );
         }
 
-        const body = await request.json();
+        const body: unknown = await request.json();
 
-        const result = createProductSchema.safeParse(body);
+        const result =
+            createProductSchema.safeParse(body);
 
         if (!result.success) {
             return NextResponse.json(
                 {
                     message: "Validation failed",
-                    errors: result.error.flatten().fieldErrors,
+                    errors:
+                        result.error.flatten().fieldErrors,
                 },
                 {
                     status: 400,
-                }
+                },
             );
         }
 
@@ -163,21 +176,36 @@ export async function PATCH(
                 name: result.data.name,
                 slug: existingProduct.slug,
                 description: result.data.description,
-                category: body.category,
+                category: result.data.category,
                 sku: result.data.sku,
                 price: String(result.data.price),
+
                 salePrice:
                     result.data.comparePrice === "" ||
                         result.data.comparePrice === undefined
                         ? null
-                        : String(result.data.comparePrice),
+                        : String(
+                            result.data.comparePrice,
+                        ),
+
                 stock: result.data.quantity,
+
                 lowStockThreshold:
                     result.data.lowStockThreshold,
+
+                featured: result.data.featured,
                 status: result.data.status,
                 updatedAt: new Date(),
             })
-            .where(eq(product.id, productId));
+            .where(
+                and(
+                    eq(product.id, productId),
+                    eq(
+                        product.storeId,
+                        seller.sellerStore.id,
+                    ),
+                ),
+            );
 
         return NextResponse.json({
             message: "Product updated successfully",
@@ -191,18 +219,20 @@ export async function PATCH(
             },
             {
                 status: 500,
-            }
+            },
         );
     }
 }
 export async function DELETE(
     request: Request,
-    {
-        params,
-    }: {
-        params: Promise<{ productId: string }>;
-    }
+    context: RouteContext,
 ) {
+    const csrfCheck = validateCsrf(request);
+
+    if (!csrfCheck.success) {
+        return csrfCheck.response;
+    }
+
     try {
         const seller = await getCurrentSeller();
 
@@ -210,7 +240,7 @@ export async function DELETE(
             return seller.error;
         }
 
-        const { productId } = await params;
+        const { productId } = await context.params;
 
         const [existingProduct] = await db
             .select({
@@ -220,8 +250,11 @@ export async function DELETE(
             .where(
                 and(
                     eq(product.id, productId),
-                    eq(product.storeId, seller.sellerStore.id)
-                )
+                    eq(
+                        product.storeId,
+                        seller.sellerStore.id,
+                    ),
+                ),
             )
             .limit(1);
 
@@ -232,13 +265,21 @@ export async function DELETE(
                 },
                 {
                     status: 404,
-                }
+                },
             );
         }
 
         await db
             .delete(product)
-            .where(eq(product.id, productId));
+            .where(
+                and(
+                    eq(product.id, productId),
+                    eq(
+                        product.storeId,
+                        seller.sellerStore.id,
+                    ),
+                ),
+            );
 
         return NextResponse.json({
             message: "Product deleted successfully",
@@ -252,7 +293,7 @@ export async function DELETE(
             },
             {
                 status: 500,
-            }
+            },
         );
     }
 }

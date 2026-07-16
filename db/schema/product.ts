@@ -7,6 +7,7 @@ import {
     text,
     timestamp,
     uniqueIndex,
+    boolean,
 } from "drizzle-orm/pg-core";
 
 import { store } from "./store";
@@ -30,6 +31,9 @@ export const product = pgTable(
                 onDelete: "cascade",
             }),
         name: text("name").notNull(),
+        featured: boolean("featured")
+    .default(false)
+    .notNull(),
         slug: text("slug").notNull(),
         description: text("description").notNull(),
         category: text("category").notNull(),

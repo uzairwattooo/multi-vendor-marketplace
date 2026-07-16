@@ -44,9 +44,21 @@ export default function SignupPage() {
                 name: values.name.trim(),
                 email: values.email.trim().toLowerCase(),
                 password: values.password,
-
                 phone: values.phone.trim(),
                 role: values.role,
+                fetchOptions: {
+                    onError: async ({ response }) => {
+                        if (response.status === 429) {
+                            const retryAfter =
+                                response.headers.get("X-Retry-After");
+
+                            toast.error(
+                                `Too many signup attempts. Try again after ${retryAfter ?? "60"
+                                } seconds.`,
+                            );
+                        }
+                    },
+                },
             });
 
             if (result.error) {

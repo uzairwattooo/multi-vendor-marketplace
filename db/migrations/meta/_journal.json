@@ -43,6 +43,20 @@
       "when": 1784110266180,
       "tag": "0005_right_shape",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1784182785625,
+      "tag": "0006_goofy_rawhide_kid",
+      "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1784224525829,
+      "tag": "0007_uneven_the_phantom",
+      "breakpoints": true
     }
   ]
 }

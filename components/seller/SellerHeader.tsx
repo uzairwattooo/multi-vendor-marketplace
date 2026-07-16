@@ -1,7 +1,6 @@
 "use client";
 
 import { Bell, Menu, Store } from "lucide-react";
-
 import { Button } from "@/components/ui/button";
 
 type SellerHeaderProps = {

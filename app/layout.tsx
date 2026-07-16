@@ -3,6 +3,7 @@ import { Inter, Playfair_Display } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "@/components/ui/sonner";
 import QueryProvider from "@/components/providers/QueryProvider";
+import CartProvider from "@/components/providers/CartProvider";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -30,10 +31,13 @@ export default function RootLayout({
         className={`${inter.variable} ${playfair.variable}  bg-[#F8F8F8] text-[#18181B] antialiased`} cz-shortcut-listen="true"
       >
         <QueryProvider>
+          <CartProvider>
 
-        {children}
+
+            {children}
+            <Toaster richColors />
+          </CartProvider>
         </QueryProvider>
-        <Toaster richColors />
       </body>
     </html>
   );

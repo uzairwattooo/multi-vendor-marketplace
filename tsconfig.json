@@ -29,6 +29,6 @@
     ".next/types/**/*.ts",
     ".next/dev/types/**/*.ts",
     "**/*.mts"
-, "db/schema/auth-sche"  ],
+, "db/schema/auth-sche", "components/providers/DashboardButton"  ],
   "exclude": ["node_modules"]
 }

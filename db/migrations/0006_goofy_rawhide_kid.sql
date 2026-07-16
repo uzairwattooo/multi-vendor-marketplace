@@ -1,0 +1,1 @@
+ALTER TABLE "product" ADD COLUMN "featured" boolean DEFAULT false NOT NULL;

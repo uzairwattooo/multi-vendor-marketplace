@@ -25,7 +25,7 @@ import {
   Shirt,
   type LucideIcon,
 } from "lucide-react";
-import { and, desc, eq, sql } from "drizzle-orm";
+import { and, desc, eq, sql, asc } from "drizzle-orm";
 import {
   category,
   product,
@@ -70,14 +70,24 @@ const categoryIconMap: Record<string, LucideIcon> = {
   kids: Baby,
 };
 export default async function HomePage() {
-  const categoryRows = await db
-    .select({
-      id: category.id,
-      name: category.name,
-      slug: category.slug,
-    })
-    .from(category);
+  let categoryRows: {
+    id: string;
+    name: string;
+    slug: string;
+  }[] = [];
 
+  try {
+    categoryRows = await db
+      .select({
+        id: category.id,
+        name: category.name,
+        slug: category.slug,
+      })
+      .from(category)
+      .orderBy(asc(category.name));
+  } catch (error) {
+    console.error("CATEGORY_QUERY_ERROR:", error);
+  }
   const categories = categoryRows.map((currentCategory) => ({
     name: currentCategory.name,
     slug: currentCategory.slug,
@@ -87,55 +97,87 @@ export default async function HomePage() {
       Package,
   }));
 
-  const productRows = await db
+  type HomeProductRow = {
+    id: string;
+    name: string;
+    slug: string;
+    storeId: string;
+    storeName: string;
+    price: string;
+    salePrice: string | null;
+    stock: number;
+    image: string | null;
+  };
+
+  const productRows: HomeProductRow[] = await db
     .select({
       id: product.id,
-      title: product.name,
-      price: product.price,
-      oldPrice: product.salePrice
-        ? product.price
-        : null,
-      salePrice: product.salePrice,
+      name: product.name,
+      slug: product.slug,
+      storeId: store.id,
       storeName: store.name,
+      price: product.price,
+      salePrice: product.salePrice,
+      stock: product.stock,
 
       image: sql<string | null>`
-                (
-                    SELECT ${productImage.url}
-                    FROM ${productImage}
-                    WHERE ${productImage.productId} = ${product.id}
-                    ORDER BY ${productImage.createdAt} ASC
-                    LIMIT 1
-                )
-            `,
+            (
+                SELECT ${productImage.url}
+                FROM ${productImage}
+                WHERE ${productImage.productId} = ${product.id}
+                ORDER BY ${productImage.createdAt} ASC
+                LIMIT 1
+            )
+        `,
     })
     .from(product)
     .innerJoin(store, eq(product.storeId, store.id))
     .where(
       and(
         eq(product.status, "active"),
+        eq(product.featured, true),
         eq(store.status, "approved"),
       ),
     )
     .orderBy(desc(product.createdAt))
     .limit(8);
+  type HomeFeaturedProduct = {
+    id: string;
+    name: string;
+    slug: string;
+    storeId: string;
+    storeName: string;
+    price: number;
+    salePrice: number | null;
+    stock: number;
+    image: string | null;
+    rating: number;
+    reviewCount: number;
+    badge?: string;
+  };
 
-  const featuredProducts = productRows.map((currentProduct) => ({
-    id: currentProduct.id,
-    title: currentProduct.title,
-    storeName: currentProduct.storeName,
-    price: Number(
-      currentProduct.salePrice ?? currentProduct.price,
-    ),
-    oldPrice: currentProduct.salePrice
-      ? Number(currentProduct.price)
-      : undefined,
-    rating: 0,
-    reviewCount: 0,
-    badge: currentProduct.salePrice ? "Sale" : undefined,
-    image: currentProduct.image,
-    imageClassName:
-      "bg-gradient-to-br from-blue-100 to-indigo-200",
-  }));
+  const featuredProducts: HomeFeaturedProduct[] =
+    productRows.map((currentProduct) => ({
+      id: currentProduct.id,
+      name: currentProduct.name,
+      slug: currentProduct.slug,
+      storeId: currentProduct.storeId,
+      storeName: currentProduct.storeName,
+      price: Number(currentProduct.price),
+
+      salePrice: currentProduct.salePrice
+        ? Number(currentProduct.salePrice)
+        : null,
+
+      stock: currentProduct.stock,
+      image: currentProduct.image,
+      rating: 0,
+      reviewCount: 0,
+
+      badge: currentProduct.salePrice
+        ? "Sale"
+        : undefined,
+    }));
 
   const storeRows = await db
     .select({
@@ -358,10 +400,21 @@ export default async function HomePage() {
           />
 
           <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-            {featuredProducts.map((currentProduct) => (
+            {featuredProducts.map((product) => (
               <ProductCard
-                key={currentProduct.id}
-                {...currentProduct}
+                key={product.id}
+                id={product.id}
+                name={product.name}
+                slug={product.slug}
+                storeId={product.storeId}
+                storeName={product.storeName}
+                price={product.price}
+                salePrice={product.salePrice}
+                stock={product.stock}
+                image={product.image}
+                rating={product.rating}
+                reviewCount={product.reviewCount}
+                badge={product.badge}
               />
             ))}
           </div>

@@ -39,6 +39,20 @@ export default function LoginPage() {
             const result = await authClient.signIn.email({
                 email: values.email.trim().toLowerCase(),
                 password: values.password,
+
+                fetchOptions: {
+                    onError: async ({ response }) => {
+                        if (response.status === 429) {
+                            const retryAfter =
+                                response.headers.get("X-Retry-After");
+
+                            toast.error(
+                                `Too many login attempts. Try again after ${retryAfter ?? "60"
+                                } seconds.`,
+                            );
+                        }
+                    },
+                },
             });
 
             if (result.error) {

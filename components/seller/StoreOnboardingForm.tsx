@@ -92,7 +92,6 @@ export default function StoreOnboardingForm({
       onSubmit={form.handleSubmit(handleSubmit)}
       className="space-y-8"
     >
-      {/* Basic information */}
       <section className="rounded-3xl border bg-card p-6 shadow-sm sm:p-8">
         <SectionTitle
           icon={Store}
@@ -160,8 +159,6 @@ export default function StoreOnboardingForm({
           </div>
         </div>
       </section>
-
-      {/* Contact information */}
       <section className="rounded-3xl border bg-card p-6 shadow-sm sm:p-8">
         <SectionTitle
           icon={Building2}
@@ -197,8 +194,6 @@ export default function StoreOnboardingForm({
           </FormField>
         </div>
       </section>
-
-      {/* Address */}
       <section className="rounded-3xl border bg-card p-6 shadow-sm sm:p-8">
         <SectionTitle
           icon={MapPin}
@@ -248,8 +243,6 @@ export default function StoreOnboardingForm({
           </FormField>
         </div>
       </section>
-
-      {/* Notice and submit */}
       <div className="rounded-2xl border border-primary/20 bg-primary/5 p-5">
         <div className="flex items-start gap-3">
           <ShieldCheck className="mt-0.5 size-5 shrink-0 text-primary" />
