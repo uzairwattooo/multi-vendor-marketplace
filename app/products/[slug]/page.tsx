@@ -41,7 +41,6 @@ export default async function ProductDetailsPage({
             stock: product.stock,
             storeName: store.name,
             storeSlug: store.slug,
-
             image: sql<string | null>`
                 (
                     SELECT ${productImage.url}

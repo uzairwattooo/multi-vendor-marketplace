@@ -27,12 +27,6 @@ export const createProductSchema = z.object({
         .optional()
         .or(z.literal("")),
 
-    sku: z
-        .string()
-        .trim()
-        .min(2, "SKU must be at least 2 characters")
-        .max(80, "SKU must be less than 80 characters"),
-
     quantity: z.coerce
         .number()
         .int("Quantity must be a whole number")

@@ -78,7 +78,6 @@ export async function GET(request: Request) {
                 storeId: store.id,
                 storeName: store.name,
                 storeSlug: store.slug,
-
                 image: sql<string | null>`
                     (
                         SELECT ${productImage.url}

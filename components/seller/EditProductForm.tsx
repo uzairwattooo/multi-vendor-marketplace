@@ -24,7 +24,6 @@ type Product = {
     name: string;
     description: string;
     category: string;
-    sku: string;
     price: string;
     salePrice: string | null;
     stock: number;
@@ -52,7 +51,6 @@ export default function EditProductForm({
             comparePrice: product.salePrice
                 ? Number(product.salePrice)
                 : undefined,
-            sku: product.sku,
             quantity: product.stock,
             lowStockThreshold:
                 product.lowStockThreshold,
@@ -123,20 +121,7 @@ export default function EditProductForm({
                     </div>
 
                     <div>
-                        <Label>
-                            SKU
-                        </Label>
 
-                        <Input
-                            {...form.register("sku")}
-                        />
-
-                        <p className="mt-1 text-sm text-red-500">
-                            {
-                                form.formState.errors.sku
-                                    ?.message
-                            }
-                        </p>
                     </div>
 
                     <div className="md:col-span-2">

@@ -1,5 +1,5 @@
 import { z } from "zod";
-
+import { isValidPhoneNumber } from "libphonenumber-js";
 export const loginSchema = z.object({
     email: z
         .string()
@@ -27,15 +27,17 @@ export const signupSchema = z
             .min(1, "Email is required")
             .email("Please enter a valid email address"),
 
+
         phone: z
             .string()
             .trim()
             .min(1, "Phone number is required")
-            .regex(
-                /^(\+92|0)?3\d{9}$/,
-                "Please enter a valid Pakistani phone number",
+            .refine(
+                (value) => isValidPhoneNumber(value),
+                {
+                    message: "Please enter a valid phone number",
+                }
             ),
-
         password: z
             .string()
             .min(8, "Password must be at least 8 characters")

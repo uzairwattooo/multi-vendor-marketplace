@@ -177,7 +177,6 @@ export async function PATCH(
                 slug: existingProduct.slug,
                 description: result.data.description,
                 category: result.data.category,
-                sku: result.data.sku,
                 price: String(result.data.price),
 
                 salePrice:

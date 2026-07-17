@@ -30,12 +30,14 @@ const links = [
         name: "Products",
         href: "/seller/products",
         icon: Package,
+        exact: true,
     },
     {
         id: "addproducts",
         name: "Add Product",
         href: "/seller/products/new",
         icon: Plus,
+        exact: false,
     },
     {
         id: "orders",
@@ -100,9 +102,10 @@ export default function SellerSidebar() {
                     const active =
                         link.href === "/"
                             ? pathname === "/"
-                            : pathname === link.href ||
-                            (link.href !== "/seller/dashboard" &&
-                                pathname.startsWith(link.href));
+                            : link.href === "/seller/products"
+                                ? pathname === "/seller/products"
+                                : pathname === link.href ||
+                                pathname.startsWith(`${link.href}/`);
 
                     return (
                         <Link

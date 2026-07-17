@@ -13,6 +13,7 @@ import {
 import { validateCsrf } from "@/lib/security/csrf";
 import { createSlug } from "@/lib/slug";
 import { createProductSchema } from "@/lib/validations/product";
+import { generateSku } from "@/lib/generate-sku";
 
 export async function POST(request: Request) {
   const csrfCheck = validateCsrf(request);
@@ -104,28 +105,18 @@ export async function POST(request: Request) {
       );
     }
 
-    const [existingSku] = await db
-      .select({
-        id: product.id,
-      })
-      .from(product)
-      .where(
-        and(
-          eq(product.storeId, sellerStore.id),
-          eq(product.sku, result.data.sku),
-        ),
-      )
-      .limit(1);
+    let sku = generateSku();
 
-    if (existingSku) {
-      return NextResponse.json(
-        {
-          message: "A product with this SKU already exists",
-        },
-        {
-          status: 409,
-        },
-      );
+    while (true) {
+      const [existingSku] = await db
+        .select({ id: product.id })
+        .from(product)
+        .where(eq(product.sku, sku))
+        .limit(1);
+
+      if (!existingSku) break;
+
+      sku = generateSku();
     }
 
     const baseSlug = createSlug(result.data.name);
@@ -155,7 +146,7 @@ export async function POST(request: Request) {
 
           category: existingCategory.name,
 
-          sku: result.data.sku,
+          sku,
           price: String(result.data.price),
           status: result.data.status,
 

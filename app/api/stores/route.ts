@@ -1,7 +1,6 @@
 import { headers } from "next/headers";
 import { NextResponse } from "next/server";
 import { eq } from "drizzle-orm";
-
 import { auth } from "@/lib/auth";
 import { db } from "@/db";
 import { store } from "@/db/schema";
@@ -24,7 +23,6 @@ export async function POST(request: Request) {
                 },
             );
         }
-
         const existingStore = await db
             .select({
                 id: store.id,
@@ -32,7 +30,6 @@ export async function POST(request: Request) {
             .from(store)
             .where(eq(store.ownerId, session.user.id))
             .limit(1);
-
         if (existingStore.length > 0) {
             return NextResponse.json(
                 {
@@ -43,11 +40,8 @@ export async function POST(request: Request) {
                 },
             );
         }
-
         const body = await request.json();
-
         const result = createStoreSchema.safeParse(body);
-
         if (!result.success) {
             return NextResponse.json(
                 {
@@ -59,9 +53,7 @@ export async function POST(request: Request) {
                 },
             );
         }
-
         const baseSlug = createSlug(result.data.name);
-
         const storeWithSameSlug = await db
             .select({
                 id: store.id,

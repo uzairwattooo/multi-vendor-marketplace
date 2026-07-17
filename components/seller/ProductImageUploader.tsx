@@ -31,8 +31,7 @@ export default function ProductImageUploader({
   onChange,
   maxImages = 8,
 }: ProductImageUploaderProps) {
-  const [uploading, setUploading] =
-    useState(false);
+  const [uploading, setUploading] = useState(false);
 
   async function handleImages(
     event: ChangeEvent<HTMLInputElement>,

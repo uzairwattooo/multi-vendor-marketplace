@@ -41,7 +41,6 @@ export default function ProductForm({
             description: "",
             price: 0,
             comparePrice: undefined,
-            sku: "",
             quantity: 0,
             lowStockThreshold: 5,
             status: "draft",
@@ -181,19 +180,6 @@ export default function ProductForm({
                             {...form.register("comparePrice")}
                         />
                     </FormField>
-
-                    <FormField
-                        label="SKU"
-                        htmlFor="sku"
-                        error={form.formState.errors.sku?.message}
-                    >
-                        <Input
-                            id="sku"
-                            placeholder="HEADPHONE-001"
-                            {...form.register("sku")}
-                        />
-                    </FormField>
-
                     <FormField
                         label="Stock Quantity"
                         htmlFor="quantity"

@@ -2,11 +2,12 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useForm } from "react-hook-form";
+import { useForm,Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
-
+import PhoneInput from "react-phone-number-input";
+import "react-phone-number-input/style.css";
 import { authClient } from "@/lib/auth-client";
 import {
     signupSchema,
@@ -19,6 +20,7 @@ export default function SignupPage() {
     const router = useRouter();
 
     const {
+        control,
         register,
         handleSubmit,
         formState: {
@@ -34,7 +36,6 @@ export default function SignupPage() {
             phone: "",
             password: "",
             confirmPassword: "",
-            role: "buyer",
         },
     });
 
@@ -45,7 +46,6 @@ export default function SignupPage() {
                 email: values.email.trim().toLowerCase(),
                 password: values.password,
                 phone: values.phone.trim(),
-                role: values.role,
                 fetchOptions: {
                     onError: async ({ response }) => {
                         if (response.status === 429) {
@@ -73,11 +73,8 @@ export default function SignupPage() {
 
             toast.success("Account created successfully");
 
-            if (values.role === "seller") {
-                router.replace("/seller/onboarding");
-            } else {
-                router.replace("/");
-            }
+            router.replace("/");
+
 
             router.refresh();
         } catch (error) {
@@ -90,7 +87,7 @@ export default function SignupPage() {
     }
 
     return (
-        <div className="mx-auto w-full max-w-md rounded-2xl border bg-card p-6 shadow-sm">
+        <div className="mx-auto w-full max-w-md rounded-2xl border bg-card p-6 shadow-sm my-2">
             <h1 className="text-2xl font-bold">Create Account</h1>
 
             <p className="mt-2 text-sm text-muted-foreground">
@@ -155,12 +152,18 @@ export default function SignupPage() {
                         Phone Number
                     </label>
 
-                    <Input
-                        id="phone"
-                        type="tel"
-                        placeholder="03001234567"
-                        autoComplete="tel"
-                        {...register("phone")}
+                    <Controller
+                        name="phone"
+                        control={control}
+                        render={({ field }) => (
+                            <PhoneInput
+                                international
+                                defaultCountry="PK"
+                                placeholder="Enter phone number"
+                                value={field.value}
+                                onChange={(value) => field.onChange(value ?? "")}
+                            />
+                        )}
                     />
 
                     {errors.phone && (
@@ -169,31 +172,6 @@ export default function SignupPage() {
                         </p>
                     )}
                 </div>
-
-                <div className="space-y-2">
-                    <label
-                        htmlFor="role"
-                        className="text-sm font-medium"
-                    >
-                        Account Type
-                    </label>
-
-                    <select
-                        id="role"
-                        {...register("role")}
-                        className="h-10 w-full rounded-md border bg-background px-3 text-sm outline-none"
-                    >
-                        <option value="buyer">Buyer</option>
-                        <option value="seller">Seller</option>
-                    </select>
-
-                    {errors.role && (
-                        <p className="text-sm text-destructive">
-                            {errors.role.message}
-                        </p>
-                    )}
-                </div>
-
                 <div className="space-y-2">
                     <label
                         htmlFor="password"
