@@ -54,10 +54,6 @@ export const signupSchema = z
         confirmPassword: z
             .string()
             .min(1, "Please confirm your password"),
-
-        role: z.enum(["buyer", "seller"], {
-            message: "Please select an account type",
-        }),
     })
     .refine(
         (values) => values.password === values.confirmPassword,

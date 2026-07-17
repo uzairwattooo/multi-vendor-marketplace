@@ -162,6 +162,7 @@ export default function SignupPage() {
                                 placeholder="Enter phone number"
                                 value={field.value}
                                 onChange={(value) => field.onChange(value ?? "")}
+                                className="border-1 border-black/10 rounded-lg p-1"
                             />
                         )}
                     />
