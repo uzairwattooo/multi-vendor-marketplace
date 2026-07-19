@@ -25,23 +25,25 @@ type CreateOrderInput = {
     platformFee?: number;
 };
 
-
-export async function createOrder(input: CreateOrderInput) {
+export async function createOrder(
+    input: CreateOrderInput,
+) {
     const existingOrder = await db.query.order.findFirst({
-        where: eq(order.stripePaymentIntentId, input.stripePaymentIntentId!),
+        where: eq(
+            order.stripePaymentIntentId,
+            input.stripePaymentIntentId!
+        ),
     });
 
     if (existingOrder) {
-        console.log("⚠️ Order already exists for this PaymentIntent");
-        return { success: true, message: "Already processed" };
+        return;
     }
-    
     const userCart = await db.query.cart.findFirst({
         where: eq(cart.userId, input.userId),
     });
-    
-    if (!userCart) throw new Error("Cart not found");
-    
+    if (!userCart) {
+        throw new Error("Cart not found");
+    }
     const items = await db
         .select({
             cartItemId: cartItem.id,
@@ -54,65 +56,87 @@ export async function createOrder(input: CreateOrderInput) {
             stock: product.stock,
         })
         .from(cartItem)
-        .innerJoin(product, eq(product.id, cartItem.productId))
+        .innerJoin(
+            product,
+            eq(product.id, cartItem.productId),
+        )
         .where(eq(cartItem.cartId, userCart.id));
-        
-    if (items.length === 0) throw new Error("Cart is empty");
-    
+    if (items.length === 0) {
+        throw new Error("Cart is empty");
+    }
     for (const item of items) {
         if (item.quantity > item.stock) {
-            throw new Error(`${item.name} is out of stock.`);
+            throw new Error(
+                `${item.name} is out of stock.`,
+            );
         }
     }
-    
     const sellerGroups = groupCartBySeller(items);
 
-    // Pure transaction ko database execution complete hone tak return karwayen
-    return await db.transaction(async (tx) => {
+    await db.transaction(async (tx) => {
         const createdOrders: string[] = [];
 
         for (const seller of sellerGroups) {
             const subtotal = seller.items.reduce(
-                (total: number, item: CartItemType) => total + item.price * item.quantity,
+                (
+                    total: number,
+                    item: CartItemType
+                ) =>
+                    total + item.price * item.quantity,
                 0,
             );
-            const platformFee = Math.round(subtotal * 0.10);
+            const platformFee =
+                Math.round(
+                    subtotal * 0.10
+                );
             const orderId = crypto.randomUUID();
-            
             await tx.insert(order).values({
                 id: orderId,
-                orderNumber: generateOrderNumber(),
+                orderNumber:
+                    generateOrderNumber(),
                 buyerId: input.userId,
                 storeId: seller.storeId,
                 status: "pending",
-                paymentStatus: input.paymentMethod === "cod" ? "pending" : "paid",
-                paymentMethod: input.paymentMethod,
-                stripePaymentIntentId: input.stripePaymentIntentId ?? null,
+                paymentStatus:
+                    input.paymentMethod === "cod"
+                        ? "pending"
+                        : "paid",
+                paymentMethod:
+                    input.paymentMethod,
+                stripePaymentIntentId:
+                    input.stripePaymentIntentId ??
+                    null,
                 currency: "usd",
                 subtotal: subtotal.toString(),
-                totalAmount: subtotal.toString(),
+                totalAmount:
+                    subtotal.toString(),
                 shippingAmount: "0",
                 taxAmount: "0",
                 discountAmount: "0",
-                platformFee: platformFee.toString(),
-                sellerAmount: (subtotal - platformFee).toString(),
+                platformFee:
+                    platformFee.toString(),
+
+                sellerAmount:
+                    (
+                        subtotal - platformFee
+                    ).toString(),
             });
 
             createdOrders.push(orderId);
-            
             await tx.insert(shippingAddress).values({
                 orderId,
                 fullName: input.shipping.fullName,
                 email: input.shipping.email,
                 phone: input.shipping.phone,
                 address: input.shipping.address,
-                apartment: input.shipping.apartment ?? null,
+                apartment:
+                    input.shipping.apartment ?? null,
                 city: input.shipping.city,
                 state: input.shipping.state,
-                postalCode: input.shipping.postalCode ?? null,
+                postalCode:
+                    input.shipping.postalCode ?? null,
                 country: input.shipping.country,
             });
-            
             for (const item of seller.items) {
                 await tx.insert(orderItem).values({
                     orderId,
@@ -120,11 +144,15 @@ export async function createOrder(input: CreateOrderInput) {
                     productId: item.productId,
                     productName: item.name,
                     sku: item.sku,
-                    unitPrice: item.price.toString(),
-                    quantity: item.quantity,
-                    totalPrice: (item.price * item.quantity).toString(),
+                    unitPrice:
+                        item.price.toString(),
+                    quantity:
+                        item.quantity,
+                    totalPrice: (
+                        item.price *
+                        item.quantity
+                    ).toString(),
                 });
-                
                 await tx
                     .update(product)
                     .set({
@@ -132,22 +160,27 @@ export async function createOrder(input: CreateOrderInput) {
                     })
                     .where(
                         and(
-                            eq(product.id, item.productId),
-                            eq(product.storeId, seller.storeId),
+                            eq(
+                                product.id,
+                                item.productId,
+                            ),
+                            eq(
+                                product.storeId,
+                                seller.storeId,
+                            ),
                         ),
                     );
             }
         }
-        
         await tx
             .delete(cartItem)
-            .where(eq(cartItem.cartId, userCart.id));
-            
-        console.log("✅ Order Created successfully inside transaction!");
-        
-        return {
-            success: true,
-            orderCount: sellerGroups.length,
-        };
+            .where(
+                eq(cartItem.cartId, userCart.id),
+            );
     });
+    return {
+        success: true,
+        orderCount: sellerGroups.length,
+    };
 }
+console.log("Order Created");
