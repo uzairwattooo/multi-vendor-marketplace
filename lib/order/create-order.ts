@@ -28,6 +28,16 @@ type CreateOrderInput = {
 export async function createOrder(
     input: CreateOrderInput,
 ) {
+    const existingOrder = await db.query.order.findFirst({
+        where: eq(
+            order.stripePaymentIntentId,
+            input.stripePaymentIntentId!
+        ),
+    });
+
+    if (existingOrder) {
+        return;
+    }
     const userCart = await db.query.cart.findFirst({
         where: eq(cart.userId, input.userId),
     });
@@ -173,3 +183,4 @@ export async function createOrder(
         orderCount: sellerGroups.length,
     };
 }
+console.log("Order Created");

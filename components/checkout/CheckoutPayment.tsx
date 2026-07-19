@@ -22,7 +22,6 @@ export default function CheckoutPayment() {
         setLoading(true);
         setError("");
 
-        console.log("Before confirmPayment");
 
         const result = await stripe.confirmPayment({
             elements,
@@ -31,9 +30,6 @@ export default function CheckoutPayment() {
             },
             redirect: "if_required",
         });
-
-        console.log("After confirmPayment");
-        console.log(result);
 
         if (result.error) {
             setError(result.error.message ?? "Payment failed.");

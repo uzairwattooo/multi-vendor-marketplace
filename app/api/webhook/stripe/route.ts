@@ -1,3 +1,4 @@
+
 import { NextResponse } from "next/server";
 import { headers } from "next/headers";
 import Stripe from "stripe";
@@ -32,21 +33,22 @@ export async function POST(req: Request) {
         if (event.type === "payment_intent.succeeded") {
             const paymentIntent =
                 event.data.object as Stripe.PaymentIntent;
-            const userId =
-                paymentIntent.metadata.userId;
-            const shipping =
-                paymentIntent.metadata.shipping;
-            if (!userId || !shipping) {
-                throw new Error("Missing metadata");
-            }
+
             await createOrder({
-                userId,
+                userId: paymentIntent.metadata.userId,
                 paymentMethod: "stripe",
                 stripePaymentIntentId: paymentIntent.id,
-                shipping: JSON.parse(shipping),
+                shipping: JSON.parse(
+                    paymentIntent.metadata.shipping
+                ),
             });
-            await createSellerTransfers(userId);
+            await createSellerTransfers(
+                paymentIntent.metadata.userId
+            );
         }
+        console.log("EVENT:", event.type);
+
+        console.log("Creating Order...");
         return NextResponse.json({
             received: true,
         });
