@@ -4,7 +4,7 @@ const nextConfig: NextConfig = {
   /* config options here */
   reactCompiler: true,
   typescript: {
-    ignoreBuildErrors:true
+    ignoreBuildErrors: true
   },
   images: {
     remotePatterns: [
@@ -12,6 +12,10 @@ const nextConfig: NextConfig = {
         protocol: "https",
         hostname: "awawvrnsmxcwoskdgdcv.supabase.co",
         pathname: "/storage/v1/object/public/**",
+      },
+      {
+        protocol: "https",
+        hostname: "placehold.co",
       },
     ],
   },

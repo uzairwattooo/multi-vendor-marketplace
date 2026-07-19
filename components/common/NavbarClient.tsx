@@ -76,6 +76,16 @@ export default function NavbarClient({
                 </Link>
             );
         }
+        if (normalizedRole === "buyer") {
+            return (
+                <Link
+                    href="/dashboard"
+                    className={className}
+                >
+                    Dashboard
+                </Link>
+            );
+        }
 
         return (
             <Link

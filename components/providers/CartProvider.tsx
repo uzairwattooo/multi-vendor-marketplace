@@ -24,15 +24,21 @@ type AddToCartItem = Omit<CartItem, "quantity">;
 
 type CartContextType = {
     items: CartItem[];
+    loading: boolean;
     totalItems: number;
     subtotal: number;
-    addItem: (product: AddToCartItem) => void;
-    removeItem: (productId: string) => void;
+    addItem: (
+        product: AddToCartItem,
+    ) => Promise<void>;
+    removeItem: (
+        productId: string,
+    ) => Promise<void>;
     updateQuantity: (
         productId: string,
         quantity: number,
-    ) => void;
-    clearCart: () => void;
+    ) => Promise<void>;
+    clearCart: () => Promise<void>;
+    loadCart: () => Promise<void>;
 };
 
 const CartContext = createContext<CartContextType | null>(null);
@@ -43,91 +49,112 @@ export default function CartProvider({
     children: React.ReactNode;
 }) {
     const [items, setItems] = useState<CartItem[]>([]);
-    const [loaded, setLoaded] = useState(false);
+    const [loading, setLoading] = useState(false);
 
-    useEffect(() => {
-        const storedCart = localStorage.getItem("marketplace-cart");
+    async function loadCart() {
+        setLoading(true);
 
-        if (storedCart) {
-            try {
-                setItems(JSON.parse(storedCart));
-            } catch {
-                localStorage.removeItem("marketplace-cart");
-            }
+        try {
+            const res = await fetch("/api/cart");
+
+            if (!res.ok) return;
+
+            const data = await res.json();
+
+            setItems(data.items);
+        } finally {
+            setLoading(false);
         }
-
-        setLoaded(true);
-    }, []);
+    }
 
     useEffect(() => {
-        if (!loaded) return;
+        loadCart();
+    }, [loadCart]);
 
-        localStorage.setItem(
-            "marketplace-cart",
-            JSON.stringify(items),
-        );
-    }, [items, loaded]);
+    async function addItem(product: AddToCartItem) {
+        setLoading(true);
 
-    function addItem(product: AddToCartItem) {
-        setItems((currentItems) => {
-            const existingItem = currentItems.find(
-                (item) =>
-                    item.productId === product.productId,
-            );
-
-            if (existingItem) {
-                return currentItems.map((item) =>
-                    item.productId === product.productId
-                        ? {
-                            ...item,
-                            quantity: Math.min(
-                                item.quantity + 1,
-                                product.stock,
-                            ),
-                        }
-                        : item,
-                );
-            }
-
-            return [
-                ...currentItems,
-                {
-                    ...product,
-                    quantity: 1,
+        try {
+            const res = await fetch("/api/cart/add", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
                 },
-            ];
-        });
-    }
+                body: JSON.stringify({
+                    productId: product.productId,
+                    quantity: 1,
+                }),
+            });
 
-    function removeItem(productId: string) {
-        setItems((currentItems) =>
-            currentItems.filter(
-                (item) => item.productId !== productId,
-            ),
-        );
-    }
+            if (!res.ok) return;
 
-    function updateQuantity(
+            await loadCart();
+        } finally {
+            setLoading(false);
+        }
+    }
+    async function removeItem(productId: string) {
+        setLoading(true);
+
+        try {
+            await fetch("/api/cart/remove", {
+                method: "DELETE",
+
+                headers: {
+                    "Content-Type":
+                        "application/json",
+                },
+
+                body: JSON.stringify({
+                    productId,
+                }),
+            });
+
+            await loadCart();
+        } finally {
+            setLoading(false);
+        }
+    }
+    async function updateQuantity(
         productId: string,
         quantity: number,
     ) {
-        setItems((currentItems) =>
-            currentItems.map((item) =>
-                item.productId === productId
-                    ? {
-                        ...item,
-                        quantity: Math.max(
-                            1,
-                            Math.min(quantity, item.stock),
-                        ),
-                    }
-                    : item,
-            ),
-        );
+        setLoading(true);
+
+        try {
+            await fetch("/api/cart/update", {
+                method: "PATCH",
+
+                headers: {
+                    "Content-Type":
+                        "application/json",
+                },
+
+                body: JSON.stringify({
+                    productId,
+                    quantity,
+                }),
+            });
+
+            await loadCart();
+        } finally {
+            setLoading(false);
+        }
+
     }
 
-    function clearCart() {
-        setItems([]);
+    async function clearCart() {
+        setLoading(true);
+
+        try {
+            await fetch("/api/cart/clear", {
+                method: "DELETE",
+            });
+
+            setItems([]);
+        } finally {
+            setLoading(false);
+        }
     }
 
     const totalItems = useMemo(
@@ -154,11 +181,13 @@ export default function CartProvider({
             value={{
                 items,
                 totalItems,
+                loading,
                 subtotal,
                 addItem,
                 removeItem,
                 updateQuantity,
                 clearCart,
+                loadCart,
             }}
         >
             {children}

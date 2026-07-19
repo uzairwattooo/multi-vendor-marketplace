@@ -1,7 +1,7 @@
 import { relations } from "drizzle-orm";
-import { index, pgEnum, pgTable, text, timestamp, uniqueIndex,} from "drizzle-orm/pg-core";
+import { index, pgEnum, pgTable, text, timestamp, uniqueIndex, boolean} from "drizzle-orm/pg-core";
 import { user } from "@/auth-schema";
-export const storeStatusEnum = pgEnum("store_status", ["pending","approved","rejected","suspended",]);
+export const storeStatusEnum = pgEnum("store_status", ["pending", "approved", "rejected", "suspended",]);
 
 export const store = pgTable(
     "store",
@@ -31,6 +31,24 @@ export const store = pgTable(
             .default("pending")
             .notNull(),
         rejectionReason: text("rejection_reason"),
+        stripeAccountId: text("stripe_account_id"),
+
+        isStripeConnected: boolean("is_stripe_connected")
+            .default(false)
+            .notNull(),
+
+        stripeChargesEnabled: boolean("stripe_charges_enabled")
+            .default(false)
+            .notNull(),
+
+        stripePayoutsEnabled: boolean("stripe_payouts_enabled")
+            .default(false)
+            .notNull(),
+
+        stripeDetailsSubmitted: boolean("stripe_details_submitted")
+            .default(false)
+            .notNull(),
+
         createdAt: timestamp("created_at")
             .defaultNow()
             .notNull(),

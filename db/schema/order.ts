@@ -23,7 +23,10 @@ export const orderStatusEnum = pgEnum("order_status", [
     "cancelled",
     "refunded",
 ]);
-
+export const paymentMethodEnum = pgEnum(
+    "payment_method",
+    ["stripe", "cod"],
+);
 export const paymentStatusEnum = pgEnum("payment_status", [
     "pending",
     "paid",
@@ -59,7 +62,19 @@ export const order = pgTable(
         paymentStatus: paymentStatusEnum("payment_status")
             .default("pending")
             .notNull(),
+        paymentMethod: paymentMethodEnum(
+            "payment_method",
+        )
+            .default("stripe")
+            .notNull(),
 
+        stripePaymentIntentId: text(
+            "stripe_payment_intent_id",
+        ),
+
+        currency: text("currency")
+            .default("usd")
+            .notNull(),
         subtotal: numeric("subtotal", {
             precision: 12,
             scale: 2,
@@ -85,7 +100,12 @@ export const order = pgTable(
         })
             .default("0")
             .notNull(),
-
+        platformFee: integer("platform_fee")
+            .default(0)
+            .notNull(),
+        sellerAmount: integer("seller_amount")
+            .default(0)
+            .notNull(),
         totalAmount: numeric("total_amount", {
             precision: 12,
             scale: 2,
@@ -149,7 +169,11 @@ export const orderItem = pgTable(
             .references(() => product.id, {
                 onDelete: "restrict",
             }),
-
+        storeId: text("store_id")
+            .notNull()
+            .references(() => store.id, {
+                onDelete: "restrict",
+            }),
         productName: text("product_name")
             .notNull(),
 
@@ -199,11 +223,16 @@ export const shippingAddress = pgTable(
         fullName: text("full_name")
             .notNull(),
 
+        email: text("email")
+            .notNull(),
+
         phone: text("phone")
             .notNull(),
 
         address: text("address")
             .notNull(),
+
+        apartment: text("apartment"),
 
         city: text("city")
             .notNull(),

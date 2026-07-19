@@ -4,3 +4,5 @@ export * from "./product";
 export * from "./category";
 export * from "./inventory";
 export * from "./order";
+export * from "./cart";
+export * from "./cart-item";

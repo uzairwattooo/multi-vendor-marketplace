@@ -1,44 +1,25 @@
 import Link from "next/link";
-import {
-    ArrowRight,
-    Boxes,
-    CreditCard,
-    Package,
-    ShoppingBag,
-    TrendingUp,
-} from "lucide-react";
-
+import { ArrowRight } from "lucide-react";
+import { headers } from "next/headers";
+import { notFound } from "next/navigation";
+import { auth } from "@/lib/auth";
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import SalesChart from "@/components/seller/analytics/SalesChart";
+import LowStockProducts from "@/components/seller/analytics/LowStockProducts";
+import RecentOrders from "@/components/seller/analytics/RecentOrders";
+import StatsCards from "@/components/seller/analytics/stats-cards";
+import { getSellerAnalytics } from "@/lib/seller/get-seller-analytics";
 
-const stats = [
-    {
-        title: "Total Revenue",
-        value: "Rs. 0",
-        description: "Total seller earnings",
-        icon: TrendingUp,
-    },
-    {
-        title: "Total Orders",
-        value: "0",
-        description: "All received orders",
-        icon: ShoppingBag,
-    },
-    {
-        title: "Total Products",
-        value: "1",
-        description: "Products in your store",
-        icon: Package,
-    },
-    {
-        title: "Available Balance",
-        value: "Rs. 0",
-        description: "Ready for payout",
-        icon: CreditCard,
-    },
-];
+export default async function SellerDashboardPage() {
+    const currentSession = await auth.api.getSession({
+        headers: await headers(),
+    });
 
-export default function SellerDashboardPage() {
+    if (!currentSession?.user) {
+        notFound();
+    }
+    const analytics = await getSellerAnalytics(currentSession.user.id);
     return (
         <div className="space-y-8">
             <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
@@ -70,93 +51,26 @@ export default function SellerDashboardPage() {
                 </Link>
             </div>
 
-            <section className="grid gap-5 sm:grid-cols-2 xl:grid-cols-4">
-                {stats.map((stat) => {
-                    const Icon = stat.icon;
-
-                    return (
-                        <div
-                            key={stat.title}
-                            className="rounded-2xl border bg-card p-6 shadow-sm"
-                        >
-                            <div className="flex items-start justify-between">
-                                <div>
-                                    <p className="text-sm text-muted-foreground">
-                                        {stat.title}
-                                    </p>
-
-                                    <h2 className="mt-3 text-3xl font-bold">
-                                        {stat.value}
-                                    </h2>
-                                </div>
-
-                                <div className="flex size-12 items-center justify-center rounded-xl bg-primary/10 text-primary">
-                                    <Icon className="size-6" />
-                                </div>
-                            </div>
-
-                            <p className="mt-4 text-sm text-muted-foreground">
-                                {stat.description}
-                            </p>
-                        </div>
-                    );
-                })}
+            <section >
+                <StatsCards
+                    revenue={analytics.stats.revenue}
+                    orders={analytics.stats.orders}
+                    products={analytics.stats.products}
+                    customers={analytics.stats.customers}
+                />
             </section>
-
             <section className="grid gap-6 xl:grid-cols-[1.5fr_1fr]">
-                <div className="rounded-2xl border bg-card p-6 shadow-sm">
-                    <div className="flex items-center justify-between">
-                        <div>
-                            <h2 className="text-lg font-semibold">
-                                Sales Overview
-                            </h2>
-
-                            <p className="mt-1 text-sm text-muted-foreground">
-                                Sales data will appear after receiving orders.
-                            </p>
-                        </div>
-
-                        <TrendingUp className="size-5 text-primary" />
-                    </div>
-
-                    <div className="mt-8 flex h-64 items-center justify-center rounded-xl bg-muted/50">
-                        <p className="text-sm text-muted-foreground">
-                            Sales chart will appear here
-                        </p>
-                    </div>
+                <div>
+                    <SalesChart/>
                 </div>
-
-                <div className="rounded-2xl border bg-card p-6 shadow-sm">
-                    <div className="flex items-center gap-3">
-                        <Boxes className="size-5 text-primary" />
-
-                        <h2 className="text-lg font-semibold">
-                            Low Stock Products
-                        </h2>
-                    </div>
-
-                    <div className="mt-8 text-center">
-                        <p className="text-sm text-muted-foreground">
-                            No low stock products found.
-                        </p>
-                    </div>
+                <div>
+                    <LowStockProducts/>
                 </div>
             </section>
 
-            <section className="rounded-2xl border bg-card p-6 shadow-sm">
-                <h2 className="text-lg font-semibold">
-                    Recent Orders
-                </h2>
+            <section>
 
-                <p className="mt-1 text-sm text-muted-foreground">
-                    Latest customer orders will appear here.
-                </p>
-
-                <div className="mt-8 text-center">
-                    <p className="text-sm text-muted-foreground">
-                        No orders received yet.
-                    </p>
-                </div>
+                <RecentOrders />
             </section>
         </div>
     );

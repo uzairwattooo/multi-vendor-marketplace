@@ -1,0 +1,2 @@
+ALTER TABLE "order_item" ALTER COLUMN "store_id" DROP NOT NULL;--> statement-breakpoint
+ALTER TABLE "order_item" ADD CONSTRAINT "order_item_store_id_store_id_fk" FOREIGN KEY ("store_id") REFERENCES "public"."store"("id") ON DELETE restrict ON UPDATE no action;

@@ -54,13 +54,13 @@ const links = [
     {
         id: "analytics",
         name: "Analytics",
-        href: "#",
+        href: "/seller/analytics",
         icon: BarChart3,
     },
     {
         id: "payouts",
         name: "Payouts",
-        href: "#",
+        href: "/seller/payouts",
         icon: CreditCard,
     },
     {
@@ -72,7 +72,7 @@ const links = [
     {
         id: "settings",
         name: "Store Settings",
-        href: "#",
+        href: "/seller/settings",
         icon: Settings,
     },
 ];

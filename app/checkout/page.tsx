@@ -1,13 +1,5 @@
-import Navbar from "@/components/common/Navbar";
-import Footer from "@/components/common/Footer";
-import CheckoutForm from "@/components/checkout/CheckoutForm";
+import CheckoutContent from "@/components/checkout/CheckoutContent";
 
 export default function CheckoutPage() {
-    return (
-        <main className="min-h-screen">
-            <Navbar />
-            <CheckoutForm />
-            <Footer />
-        </main>
-    );
+    return <CheckoutContent />;
 }
