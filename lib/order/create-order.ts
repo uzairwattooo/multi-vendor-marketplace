@@ -66,21 +66,13 @@ export async function createOrder(
 
     await db.transaction(async (tx) => {
         const createdOrders: string[] = [];
-
         for (const seller of sellerGroups) {
             const subtotal = seller.items.reduce(
-                (
-                    total: number,
-                    item: CartItemType
-                ) =>
-                    total + item.price * item.quantity,
-                0,
-            );
-            const platformFee =
-                Math.round(
-                    subtotal * 0.10
-                );
+                (total: number,item: CartItemType) =>
+                    total + item.price * item.quantity,0,);
+            const platformFee = Math.round(subtotal * 0.10);
             const orderId = crypto.randomUUID();
+
             await tx.insert(order).values({
                 id: orderId,
                 orderNumber:
@@ -88,8 +80,7 @@ export async function createOrder(
                 buyerId: input.userId,
                 storeId: seller.storeId,
                 status: "pending",
-                paymentStatus:
-                    input.paymentMethod === "cod"
+                paymentStatus: input.paymentMethod === "cod"
                         ? "pending"
                         : "paid",
                 paymentMethod:
@@ -108,7 +99,6 @@ export async function createOrder(
                 discountAmount: "0",
                 platformFee:
                     platformFee.toString(),
-
                 sellerAmount:
                     (
                         subtotal - platformFee
@@ -170,6 +160,9 @@ export async function createOrder(
             .where(
                 eq(cartItem.cartId, userCart.id),
             );
+        await tx
+            .delete(cart)
+            .where(eq(cart.id, userCart.id));
     });
     return {
         success: true,

@@ -8,6 +8,7 @@ import {
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { toast } from "sonner";
 
 
 async function openStripeDashboard() {
@@ -16,7 +17,7 @@ async function openStripeDashboard() {
     });
 
     if (!res.ok) {
-        alert("Unable to open Stripe Dashboard");
+        toast.error("Unable to open Stripe Dashboard");
         return;
     }
 
@@ -31,7 +32,7 @@ async function refreshStripeStatus() {
     });
 
     if (!res.ok) {
-        alert("Unable to refresh Stripe status");
+        toast.error("Unable to refresh Stripe status");
         return;
     }
 

@@ -9,6 +9,7 @@ import {
 } from "@stripe/react-stripe-js";
 
 import { Button } from "@/components/ui/button";
+import { toast } from "sonner";
 
 type Props = {
     returnUrl: string;
@@ -38,7 +39,7 @@ export default function StripePaymentForm({
             });
 
         if (error) {
-            alert(
+            toast.error(
                 error.message ??
                 "Payment failed",
             );

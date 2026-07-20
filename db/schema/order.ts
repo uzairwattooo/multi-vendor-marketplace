@@ -48,7 +48,7 @@ export const order = pgTable(
             .references(() => user.id, {
                 onDelete: "restrict",
             }),
-
+stripeCheckoutSessionId: text("stripe_checkout_session_id"),
         storeId: text("store_id")
             .notNull()
             .references(() => store.id, {

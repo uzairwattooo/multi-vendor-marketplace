@@ -3,21 +3,15 @@ import { NextResponse } from "next/server";
 import Stripe from "stripe";
 import { stripe } from "@/lib/stripe";
 import { db } from "@/db";
-import { checkoutSession,cart,cartItem } from "@/db/schema";
+import { checkoutSession, cart, cartItem } from "@/db/schema";
 import { eq } from "drizzle-orm";
 import { createOrder } from "@/lib/order/create-order";
 
 export async function POST(
     req: Request,
 ) {
-    const body =
-        await req.text();
-
-    const signature =
-        (await headers()).get(
-            "stripe-signature",
-        );
-
+    const body = await req.text();
+    const signature = (await headers()).get("stripe-signature",);
     if (!signature) {
         return NextResponse.json(
             {
@@ -30,7 +24,6 @@ export async function POST(
         );
     }
     let event: Stripe.Event;
-
     try {
         event =
             stripe.webhooks.constructEvent(
@@ -51,16 +44,7 @@ export async function POST(
         );
     }
     if (
-        event.type !==
-        "payment_intent.succeeded"
-    ) {
-        return NextResponse.json({
-            received: true,
-        });
-    }
-    if (
-        event.type !==
-        "payment_intent.succeeded"
+        event.type !== "payment_intent.succeeded"
     ) {
         return NextResponse.json({
             received: true,
@@ -75,7 +59,6 @@ export async function POST(
                 paymentIntent.id,
             ),
         });
-
     if (!session) {
         return NextResponse.json(
             {
@@ -87,36 +70,34 @@ export async function POST(
             },
         );
     }
-    await createOrder({
-        userId: session.userId,
-
-        paymentMethod:
-            "stripe",
-
-        stripePaymentIntentId:
-            paymentIntent.id,
-
-        shipping:
-            session.shipping as any,
-    });
+    try {
+        await createOrder({
+            userId: session.userId,
+            paymentMethod: "stripe",
+            stripePaymentIntentId: paymentIntent.id,
+            shipping: session.shipping as any,
+        });
+    } catch (error) {
+        console.error("Create Order Error:", error);
+    }
     const userCart = await db.query.cart.findFirst({
         where: eq(cart.userId, session.userId),
     });
-    if (userCart) {
-        await db.delete(cartItem).where(eq(cartItem.cartId, userCart.id));
-        await db.delete(cart).where(eq(cart.userId, session.userId));
-    }
-    await db
-        .delete(checkoutSession)
-        .where(
-            eq(
-                checkoutSession.id,
-                session.id,
-            ),
-        );
-    return NextResponse.json({
-        received: true,
-    });
+if (userCart) {
+    await db.delete(cartItem).where(eq(cartItem.cartId, userCart.id));
+    await db.delete(cart).where(eq(cart.userId, session.userId));
+}
+await db
+    .delete(checkoutSession)
+    .where(
+        eq(
+            checkoutSession.id,
+            session.id,
+        ),
+    );
+return NextResponse.json({
+    received: true,
+});
 
 }
 

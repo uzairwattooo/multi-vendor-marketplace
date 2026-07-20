@@ -1,7 +1,9 @@
 "use client";
 
 import { Input } from "@/components/ui/input";
+import { MapPin } from "lucide-react";
 import { Label } from "@/components/ui/label";
+import PhoneInput from "@/components/ui/phone-input";
 
 type ShippingData = {
     fullName: string;
@@ -37,126 +39,146 @@ export default function ShippingForm({
     };
 
     return (
-        <div className="rounded-2xl border bg-card p-6 shadow-sm">
+        <div className="overflow-hidden rounded-3xl border bg-white shadow-sm dark:bg-card">
 
-            <h2 className="text-xl font-semibold">
-                Shipping Address
-            </h2>
+            <div className="border-b bg-muted/30 px-8 py-6">
+                <div className="flex items-center gap-3">
+                    <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-primary/10">
+                        <MapPin className="h-5 w-5 text-primary" />
+                    </div>
 
-            <div className="mt-6 grid gap-5 md:grid-cols-2">
+                    <div>
+                        <h2 className="text-2xl font-semibold tracking-tight">
+                            Shipping Address
+                        </h2>
+
+                        <p className="mt-1 text-sm text-muted-foreground">
+                            Enter your delivery details for your order.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div className="grid gap-6 p-8 md:grid-cols-2">
 
                 <div className="space-y-2">
-                    <Label>Full Name</Label>
+                    <Label className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                        Full Name
+                    </Label>
 
                     <Input
+                        className="h-12 rounded-xl"
                         value={value.fullName}
                         onChange={(e) =>
-                            update(
-                                "fullName",
-                                e.target.value,
-                            )
+                            update("fullName", e.target.value)
                         }
                         placeholder="John Doe"
                     />
                 </div>
 
                 <div className="space-y-2">
-                    <Label>Phone</Label>
-
-                    <Input
+                    <Label className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                        Phone Number
+                    </Label>
+                    <PhoneInput
+                        international
+                        defaultCountry="PK"
                         value={value.phone}
-                        onChange={(e) =>
-                            update(
-                                "phone",
-                                e.target.value,
-                            )
+                        onChange={(value) =>
+                            update("phone", value ?? "")
                         }
-                        placeholder="+92..."
+                        className="border-1 border-black/10 rounded-lg p-2.5"
                     />
                 </div>
-                <div className="space-y-2">
-                    <Label>Email</Label>
+
+                <div className="space-y-2 md:col-span-2">
+                    <Label className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                        Email Address
+                    </Label>
+
                     <Input
+                        className="h-12 rounded-xl"
                         type="email"
                         value={value.email}
-                        onChange={(e) => update("email", e.target.value)}
+                        onChange={(e) =>
+                            update("email", e.target.value)
+                        }
                         placeholder="john@example.com"
                     />
                 </div>
 
                 <div className="space-y-2 md:col-span-2">
-                    <Label>Address</Label>
+                    <Label className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                        Street Address
+                    </Label>
 
                     <Input
+                        className="h-12 rounded-xl"
                         value={value.address}
                         onChange={(e) =>
-                            update(
-                                "address",
-                                e.target.value,
-                            )
+                            update("address", e.target.value)
                         }
-                        placeholder="Street Address"
+                        placeholder="House, Street, Area"
                     />
                 </div>
 
                 <div className="space-y-2">
-                    <Label>City</Label>
+                    <Label className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                        City
+                    </Label>
 
                     <Input
+                        className="h-12 rounded-xl"
                         value={value.city}
                         onChange={(e) =>
-                            update(
-                                "city",
-                                e.target.value,
-                            )
+                            update("city", e.target.value)
                         }
                         placeholder="Sargodha"
                     />
                 </div>
 
                 <div className="space-y-2">
-                    <Label>State</Label>
+                    <Label className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                        State / Province
+                    </Label>
 
                     <Input
+                        className="h-12 rounded-xl"
                         value={value.state}
                         onChange={(e) =>
-                            update(
-                                "state",
-                                e.target.value,
-                            )
+                            update("state", e.target.value)
                         }
                         placeholder="Punjab"
                     />
                 </div>
 
                 <div className="space-y-2">
-                    <Label>Postal Code</Label>
+                    <Label className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                        Postal Code
+                    </Label>
 
                     <Input
-                        value={
-                            value.postalCode ?? ""
-                        }
+                        className="h-12 rounded-xl"
+                        value={value.postalCode ?? ""}
                         onChange={(e) =>
-                            update(
-                                "postalCode",
-                                e.target.value,
-                            )
+                            update("postalCode", e.target.value)
                         }
                         placeholder="40100"
                     />
                 </div>
 
                 <div className="space-y-2">
-                    <Label>Country</Label>
+                    <Label className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                        Country
+                    </Label>
 
                     <Input
+                        className="h-12 rounded-xl"
                         value={value.country}
                         onChange={(e) =>
-                            update(
-                                "country",
-                                e.target.value,
-                            )
+                            update("country", e.target.value)
                         }
+                        placeholder="Pakistan"
                     />
                 </div>
 

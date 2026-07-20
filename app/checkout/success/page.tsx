@@ -40,7 +40,7 @@ export default function CheckoutSuccessPage() {
 
                 <div className="mt-10 flex flex-col gap-4 sm:flex-row sm:justify-center">
 
-                    <Button render={<Link href="/orders" />} nativeButton={false} size="lg">
+                    <Button render={<Link href="/dashboard/orders" />} nativeButton={false} size="lg">
                         View My Orders
                     </Button>
 

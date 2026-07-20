@@ -3,7 +3,7 @@
 import Image from "next/image";
 import { Separator } from "@/components/ui/separator";
 import { useCart } from "@/components/providers/CartProvider";
-import { Button } from "@/components/ui/button";
+import { ShoppingBag } from "lucide-react";
 
 export default function OrderSummary() {
     const { items, subtotal } = useCart();
@@ -14,17 +14,29 @@ export default function OrderSummary() {
         shipping +
         tax;
     return (
-        <aside className="sticky top-24 h-fit rounded-2xl border bg-card p-6 shadow-sm">
-            <h2 className="text-xl font-semibold">
-                Order Summary
-            </h2>
-            <div className="mt-6 space-y-5">
+        <aside className=" overflow-hidden rounded-3xl border bg-white shadow-sm dark:bg-card">
+            <div className="border-b bg-muted/30 px-6 py-5">
+                <div className="flex items-center gap-3">
+                    <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-primary/10">
+                        <ShoppingBag className="h-5 w-5 text-primary" />
+                    </div>
+                    <div>
+                        <h2 className="text-xl font-semibold">
+                            Order Summary
+                        </h2>
+                        <p className="text-sm text-muted-foreground">
+                            Review your order before payment
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div className="space-y-5 p-6">
                 {items.map((item) => (
                     <div
                         key={item.productId}
-                        className="flex gap-4"
+                        className="flex gap-4 rounded-2xl border bg-muted/20 p-4 transition-colors hover:bg-muted/40"
                     >
-                        <div className="relative h-16 w-16 overflow-hidden rounded-lg bg-muted">
+                        <div className="relative h-20 w-20 overflow-hidden rounded-xl border bg-background">
                             {item.image && (
                                 <Image
                                     src={item.image}
@@ -34,62 +46,80 @@ export default function OrderSummary() {
                                 />
                             )}
                         </div>
-                        <div className="flex-1">
-                            <h3 className="line-clamp-2 font-medium">
-                                {item.name}
-                            </h3>
-                            <p className="text-sm text-muted-foreground">
-                                Qty: {item.quantity}
+                        <div className="flex flex-1 flex-col justify-between">
+                            <div>
+                                <h3 className="line-clamp-2 font-semibold">
+                                    {item.name}
+                                </h3>
+                                <p className="mt-1 text-sm text-muted-foreground">
+                                    Quantity: {item.quantity}
+                                </p>
+                            </div>
+                            <p className="text-lg font-bold text-primary">
+                                $
+                                {(
+                                    item.price *
+                                    item.quantity
+                                ).toLocaleString()}
                             </p>
                         </div>
-                        <p className="font-semibold">
-                            $
-                            {(
-                                item.price *
-                                item.quantity
-                            ).toLocaleString()}
-                        </p>
                     </div>
                 ))}
-            </div>
-            <Separator className="my-6" />
-            <div className="space-y-4">
-                <div className="flex justify-between">
-                    <span className="text-muted-foreground">
-                        Subtotal
-                    </span>
-                    <span>
-                        $
-                        {subtotal.toLocaleString()}
-                    </span>
+                <Separator />
+                <div className="space-y-4 rounded-2xl bg-muted/20 p-5">
+                    <div className="flex items-center justify-between text-sm">
+                        <span className="text-muted-foreground">
+                            Subtotal
+                        </span>
+                        <span className="font-medium">
+                            ${subtotal.toLocaleString()}
+                        </span>
+                    </div>
+                    <div className="flex items-center justify-between text-sm">
+                        <span className="text-muted-foreground">
+                            Shipping
+                        </span>
+                        <span className="font-medium text-green-600">
+                            Free
+                        </span>
+                    </div>
+                    <div className="flex items-center justify-between text-sm">
+                        <span className="text-muted-foreground">
+                            Tax
+                        </span>
+                        <span className="font-medium">
+                            $0
+                        </span>
+                    </div>
                 </div>
-                <div className="flex justify-between">
-                    <span className="text-muted-foreground">
-                        Shipping
-                    </span>
-                    <span>
-                        Free
-                    </span>
-                </div>
-                <div className="flex justify-between">
-                    <span className="text-muted-foreground">
-                        Tax
-                    </span>
-                    <span>
-                        $0
-                    </span>
+                <Separator />
+                <div className="rounded-2xl bg-primary px-5 py-4 text-primary-foreground">
+                    <div className="flex items-center justify-between">
+                        <span className="text-base font-medium">
+                            Total
+                        </span>
+                        <span className="text-2xl font-bold">
+                            ${total.toLocaleString()}
+                        </span>
+                    </div>
+                        <div className="mt-5 rounded-2xl border bg-muted/20 p-4">
+                            <div className="flex items-center gap-3">
+                                <div className="text-2xl">
+                                    🚚
+                                </div>
+                                <div>
+                                    <p className="font-medium">
+                                        Free Shipping
+                                    </p>
+                                    <p className="text-sm text-muted-foreground">
+                                        Estimated delivery in 3–5 business days.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
                 </div>
             </div>
-            <Separator className="my-6" />
-            <div className="flex justify-between text-lg font-bold">
-                <span>
-                    Total
-                </span>
-                <span>
-                    $
-                    {total.toLocaleString()}
-                </span>
-            </div>
+
         </aside>
     );
 }
