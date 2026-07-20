@@ -44,15 +44,9 @@ export async function getProfile() {
 
         return profile;
     } catch (error) {
-        console.error(
-            "GET_PROFILE_ERROR:",
-            error,
-        );
-
-        throw new Error(
-            "Failed to load profile."
-        );
-    }
+    console.error("GET_PROFILE_ERROR:", error);
+    return null;
+}
 }
 export async function updateProfile(
     values: ProfileSchema,

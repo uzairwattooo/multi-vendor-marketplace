@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow, } from "@/components/ui/table";
 import { getBuyerDashboard } from "@/lib/actions/dashboard";
-
+export const dynamic = "force-dynamic";
 
 
 export default async function BuyerDashboardPage() {

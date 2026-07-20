@@ -9,7 +9,7 @@ import {
     CardHeader,
     CardTitle,
 } from "@/components/ui/card";
-
+export const dynamic = "force-dynamic";
 const wishlist = [
     {
         id: "1",

@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow, } from "@/components/ui/table";
 import { getBuyerOrders } from "@/lib/actions/order";
-
+export const dynamic = "force-dynamic";
 
 function getStatusClass(status: string) {
     switch (status) {

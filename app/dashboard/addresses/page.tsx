@@ -2,7 +2,7 @@ import Link from "next/link";
 import { MapPin, Plus, Pencil, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { getAddresses } from "@/lib/actions/address";
-
+export const dynamic = "force-dynamic";
 
 
 export default async function AddressesPage() {
