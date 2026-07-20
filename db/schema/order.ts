@@ -5,6 +5,7 @@ import {
     numeric,
     pgEnum,
     pgTable,
+    boolean,
     text,
     timestamp,
     uniqueIndex,
@@ -368,3 +369,33 @@ export const paymentRelations = relations(
         }),
     }),
 );
+export const userAddress = pgTable("user_address", {
+    id: text("id")
+        .primaryKey()
+        .$defaultFn(() => crypto.randomUUID()),
+    userId: text("user_id")
+        .notNull()
+        .references(() => user.id, {
+            onDelete: "cascade",
+        }),
+    fullName: text("full_name").notNull(),
+    phone: text("phone").notNull(),
+    address: text("address").notNull(),
+    apartment: text("apartment"),
+    city: text("city").notNull(),
+    state: text("state").notNull(),
+    postalCode: text("postal_code"),
+    country: text("country")
+        .default("Pakistan")
+        .notNull(),
+    isDefault: boolean("is_default")
+        .default(false)
+        .notNull(),
+    createdAt: timestamp("created_at")
+        .defaultNow()
+        .notNull(),
+    updatedAt: timestamp("updated_at")
+        .defaultNow()
+        .$onUpdate(() => new Date())
+        .notNull(),
+});

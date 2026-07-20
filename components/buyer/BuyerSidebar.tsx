@@ -1,6 +1,8 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
+
 import { usePathname } from "next/navigation";
 import {
     House,
@@ -53,17 +55,32 @@ const links = [
         icon: House,
     },
 ];
+type BuyerSidebarProps = {
+    user: {
+        name: string;
+        image: string | null;
+    };
+};
 
-export default function BuyerSidebar() {
+export default function BuyerSidebar({
+    user,
+}: BuyerSidebarProps) { 
     const pathname = usePathname();
 
     return (
         <aside className="fixed inset-y-0 left-0 z-40 hidden w-72 border-r border-white/10 bg-[#111827] text-white lg:block">
             <div className="flex h-20 items-center gap-3 border-b border-white/10 px-6">
-                <div className="flex size-11 items-center justify-center rounded-xl bg-primary">
-                    <User className="size-5" />
-                </div>
-
+                {user.image ? (
+                    <Image
+                        src={user.image}
+                        alt={user.name}
+                        width={44}
+                        height={44}
+                        className="size-11 object-cover rounded-2xl"
+                    />
+                ) : (
+                    <User className="size-5 text-white" />
+                )}
                 <div>
                     <h2 className="font-bold">
                         My Account
