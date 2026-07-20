@@ -1,73 +1,36 @@
 import Link from "next/link";
-import {
-    Package,
-    ShoppingBag,
-    Heart,
-    Truck,
-    ArrowRight,
-} from "lucide-react";
-
+import { Package, ShoppingBag, Heart, Truck, ArrowRight, } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import {
-    Card,
-    CardContent,
-    CardHeader,
-    CardTitle,
-} from "@/components/ui/card";
-import {
-    Table,
-    TableBody,
-    TableCell,
-    TableHead,
-    TableHeader,
-    TableRow,
-} from "@/components/ui/table";
+import { Card, CardContent, CardHeader, CardTitle, } from "@/components/ui/card";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow, } from "@/components/ui/table";
+import { getBuyerDashboard } from "@/lib/actions/dashboard";
 
-const stats = [
-    {
-        title: "Total Orders",
-        value: 12,
-        icon: ShoppingBag,
-    },
-    {
-        title: "Pending Orders",
-        value: 2,
-        icon: Package,
-    },
-    {
-        title: "Delivered",
-        value: 9,
-        icon: Truck,
-    },
-    {
-        title: "Wishlist",
-        value: 5,
-        icon: Heart,
-    },
-];
 
-const recentOrders = [
-    {
-        id: "ORD-1001",
-        date: "18 Jul 2026",
-        total: "Rs. 3,500",
-        status: "Delivered",
-    },
-    {
-        id: "ORD-1002",
-        date: "17 Jul 2026",
-        total: "Rs. 2,250",
-        status: "Pending",
-    },
-    {
-        id: "ORD-1003",
-        date: "15 Jul 2026",
-        total: "Rs. 8,900",
-        status: "Shipped",
-    },
-];
 
-export default function BuyerDashboardPage() {
+export default async function BuyerDashboardPage() {
+    const dashboard = await getBuyerDashboard();
+    const stats = [
+        {
+            title: "Total Orders",
+            value: dashboard.totalOrders,
+            icon: ShoppingBag,
+        },
+        {
+            title: "Pending Orders",
+            value: dashboard.pendingOrders,
+            icon: Package,
+        },
+        {
+            title: "Delivered",
+            value: dashboard.deliveredOrders,
+            icon: Truck,
+        },
+        {
+            title: "Wishlist",
+            value: dashboard.wishlist,
+            icon: Heart,
+        },
+    ];
     return (
         <div className="space-y-8">
             <div className="flex items-center justify-between">
@@ -81,7 +44,7 @@ export default function BuyerDashboardPage() {
                     </p>
                 </div>
 
-                <Button  nativeButton={false}
+                <Button nativeButton={false}
                     render={<Link href="/dashboard/products" />}
                 >
                     Continue Shopping
@@ -121,7 +84,7 @@ export default function BuyerDashboardPage() {
                         <CardTitle>
                             Recent Orders
                         </CardTitle>
-                        <Button  nativeButton={false}
+                        <Button nativeButton={false}
                             variant="ghost"
                             size="sm"
 
@@ -143,19 +106,19 @@ export default function BuyerDashboardPage() {
                                 </TableRow>
                             </TableHeader>
                             <TableBody>
-                                {recentOrders.map((order) => (
+                                {dashboard.recentOrders.map((order) => (
                                     <TableRow key={order.id}>
                                         <TableCell className="font-medium">
                                             {order.id}
                                         </TableCell>
                                         <TableCell>
-                                            {order.date}
+                                            {new Date(order.createdAt).toLocaleDateString()}
                                         </TableCell>
                                         <TableCell>
-                                            {order.total}
+                                            Rs. {Number(order.totalAmount).toLocaleString()}
                                         </TableCell>
                                         <TableCell>
-                                            <span className="rounded-full bg-primary/10 px-3 py-1 text-xs font-medium text-primary">
+                                            <span className="rounded-full bg-primary/10 px-3 py-1 text-xs font-medium text-primary capitalize">
                                                 {order.status}
                                             </span>
                                         </TableCell>
@@ -172,7 +135,7 @@ export default function BuyerDashboardPage() {
                         </CardTitle>
                     </CardHeader>
                     <CardContent className="space-y-3">
-                        <Button  nativeButton={false}
+                        <Button nativeButton={false}
                             variant="outline"
                             className="w-full"
                             render={<Link href="/dashboard/orders" />}
@@ -180,14 +143,14 @@ export default function BuyerDashboardPage() {
                             My Orders
                         </Button>
 
-                        <Button  nativeButton={false}
+                        <Button nativeButton={false}
                             variant="outline"
                             className="w-full"
                             render={<Link href="/dashboard/wishlist" />}
                         >
                             Wishlist
                         </Button>
-                        <Button  nativeButton={false}
+                        <Button nativeButton={false}
                             className="w-full justify-center"
                             variant="outline"
 
@@ -196,7 +159,7 @@ export default function BuyerDashboardPage() {
                             Manage Addresses
 
                         </Button>
-                        <Button  nativeButton={false}
+                        <Button nativeButton={false}
                             className="w-full justify-center"
                             variant="outline"
 

@@ -2,12 +2,12 @@
 
 import {
     createContext,
+    useCallback,
     useContext,
     useEffect,
     useMemo,
     useState,
 } from "react";
-
 export type CartItem = {
     productId: string;
     name: string;
@@ -48,32 +48,24 @@ export default function CartProvider({
 }: {
     children: React.ReactNode;
 }) {
+
     const [items, setItems] = useState<CartItem[]>([]);
     const [loading, setLoading] = useState(false);
+    const [refreshing, setRefreshing] = useState(false);
 
-    async function loadCart() {
-        setLoading(true);
-
+    const loadCart = useCallback(async () => {
+        setRefreshing(true);
         try {
             const res = await fetch("/api/cart");
-
             if (!res.ok) return;
-
             const data = await res.json();
-
             setItems(data.items);
         } finally {
-            setLoading(false);
+            setRefreshing(false);
         }
-    }
-
-    useEffect(() => {
-        loadCart();
-    }, [loadCart]);
-
+    }, []);
     async function addItem(product: AddToCartItem) {
         setLoading(true);
-
         try {
             const res = await fetch("/api/cart/add", {
                 method: "POST",
@@ -85,9 +77,7 @@ export default function CartProvider({
                     quantity: 1,
                 }),
             });
-
             if (!res.ok) return;
-
             await loadCart();
         } finally {
             setLoading(false);
@@ -95,21 +85,16 @@ export default function CartProvider({
     }
     async function removeItem(productId: string) {
         setLoading(true);
-
         try {
             await fetch("/api/cart/remove", {
                 method: "DELETE",
-
                 headers: {
-                    "Content-Type":
-                        "application/json",
+                    "Content-Type": "application/json",
                 },
-
                 body: JSON.stringify({
                     productId,
                 }),
             });
-
             await loadCart();
         } finally {
             setLoading(false);
@@ -120,43 +105,33 @@ export default function CartProvider({
         quantity: number,
     ) {
         setLoading(true);
-
         try {
             await fetch("/api/cart/update", {
                 method: "PATCH",
-
                 headers: {
-                    "Content-Type":
-                        "application/json",
+                    "Content-Type": "application/json",
                 },
-
                 body: JSON.stringify({
                     productId,
                     quantity,
                 }),
             });
-
             await loadCart();
         } finally {
             setLoading(false);
         }
-
     }
-
     async function clearCart() {
         setLoading(true);
-
         try {
             await fetch("/api/cart/clear", {
                 method: "DELETE",
             });
-
             setItems([]);
         } finally {
             setLoading(false);
         }
     }
-
     const totalItems = useMemo(
         () =>
             items.reduce(
@@ -165,7 +140,6 @@ export default function CartProvider({
             ),
         [items],
     );
-
     const subtotal = useMemo(
         () =>
             items.reduce(
@@ -175,7 +149,6 @@ export default function CartProvider({
             ),
         [items],
     );
-
     return (
         <CartContext.Provider
             value={{

@@ -89,13 +89,10 @@ export async function POST(
         const paymentIntent =
             await stripe.paymentIntents.create({
                 amount: total * 100,
-
                 currency: "usd",
-
                 automatic_payment_methods: {
                     enabled: true,
                 },
-
                 metadata: {
                     userId: session.user.id,
                     cartId: userCart.id,
