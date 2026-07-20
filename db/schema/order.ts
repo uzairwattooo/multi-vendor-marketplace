@@ -100,12 +100,7 @@ export const order = pgTable(
         })
             .default("0")
             .notNull(),
-        platformFee: integer("platform_fee")
-            .default(0)
-            .notNull(),
-        sellerAmount: integer("seller_amount")
-            .default(0)
-            .notNull(),
+
         totalAmount: numeric("total_amount", {
             precision: 12,
             scale: 2,

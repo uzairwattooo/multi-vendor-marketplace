@@ -1,18 +1,21 @@
 import { NextResponse } from "next/server";
-import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
+import { auth } from "@/lib/auth";
 import { createOrder } from "@/lib/order/create-order";
 
-
-export async function POST(req: Request) {
+export async function POST(
+    req: Request,
+) {
     try {
-        const session = await auth.api.getSession({
-            headers: await headers(),
-        });
+        const session =
+            await auth.api.getSession({
+                headers: await headers(),
+            });
 
         if (!session) {
             return NextResponse.json(
                 {
+                    success: false,
                     message: "Unauthorized",
                 },
                 {
@@ -20,21 +23,39 @@ export async function POST(req: Request) {
                 },
             );
         }
-        const { shipping } = await req.json();
+        const { shipping } =
+            await req.json();
 
-        const result = await createOrder({
+        if (!shipping) {
+            return NextResponse.json(
+                {
+                    success: false,
+                    message:
+                        "Shipping address is required",
+                },
+                {
+                    status: 400,
+                },
+            );
+        }
+        const orders = await createOrder({
             userId: session.user.id,
             paymentMethod: "cod",
             shipping,
         });
-        return NextResponse.json(result);
+
+        return NextResponse.json({
+            success: true,
+            orders,
+        });
     } catch (error) {
         console.error(error);
 
         return NextResponse.json(
             {
                 success: false,
-                message: "Unable to place order",
+                message:
+                    "Failed to place order",
             },
             {
                 status: 500,

@@ -21,6 +21,7 @@ type CreateOrderInput = {
     userId: string;
     paymentMethod: "stripe" | "cod";
     stripePaymentIntentId?: string;
+    stripeCheckoutSessionId?: string;
     shipping: ShippingData
     platformFee?: number;
 };
@@ -96,6 +97,8 @@ export async function createOrder(
                 stripePaymentIntentId:
                     input.stripePaymentIntentId ??
                     null,
+                stripeCheckoutSessionId:
+                    input.stripeCheckoutSessionId,
                 currency: "usd",
                 subtotal: subtotal.toString(),
                 totalAmount:

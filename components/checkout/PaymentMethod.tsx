@@ -1,114 +1,84 @@
 "use client";
 
-import { CreditCard, Banknote } from "lucide-react";
-import { Card, CardContent, } from "@/components/ui/card";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 
 type Props = {
-    paymentMethod: "stripe" | "cod";
+    value: "cod" | "stripe";
 
-    setPaymentMethod: (
-        value: "stripe" | "cod",
+    onChange: (
+        value: "cod" | "stripe",
     ) => void;
 };
 
 export default function PaymentMethod({
-    paymentMethod,
-    setPaymentMethod,
+    value,
+    onChange,
 }: Props) {
     return (
-        <section className="rounded-2xl border bg-card p-6 shadow-sm">
+        <div className="rounded-2xl border bg-card p-6 shadow-sm">
 
             <h2 className="text-xl font-semibold">
                 Payment Method
             </h2>
 
-            <p className="mt-1 text-sm text-muted-foreground">
-                Choose how you'd like to pay.
-            </p>
+            <div className="mt-6 space-y-4">
 
-            <RadioGroup
-                value={paymentMethod}
-                onValueChange={(value) =>
-                    setPaymentMethod(
-                        value as
-                        | "stripe"
-                        | "cod",
-                    )
-                }
-                className="mt-8 space-y-4"
-            >
+                <label className="flex cursor-pointer items-center gap-3 rounded-xl border p-4">
 
-                <Card
-                    className={`cursor-pointer transition
-                        ${paymentMethod === "stripe"
-                            ? "border-primary ring-2 ring-primary/20"
-                            : "hover:border-primary"
-                        }`}>
+                    <input
+                        type="radio"
+                        name="paymentMethod"
+                        value="cod"
+                        checked={value === "cod"}
+                        onChange={() =>
+                            onChange("cod")
+                        }
+                    />
 
-                    <CardContent className="flex items-center gap-4 p-5">
+                    <div>
 
-                        <RadioGroupItem
-                            value="stripe"
-                            id="stripe"
-                        />
+                        <p className="font-medium">
+                            Cash on Delivery
+                        </p>
 
-                        <CreditCard className="size-6 text-primary" />
+                        <p className="text-sm text-muted-foreground">
+                            Pay when your order arrives.
+                        </p>
 
-                        <div className="flex-1">
+                    </div>
 
-                            <Label
-                                htmlFor="stripe"
-                                className="cursor-pointer text-base font-semibold"
-                            >
-                                Credit / Debit Card
-                            </Label>
+                </label>
 
-                            <p className="mt-2 text-xs text-green-600">
-                                SSL Encrypted Secure Payment
-                            </p>
-                        </div>
+                <label className="flex cursor-pointer items-center gap-3 rounded-xl border p-4">
 
-                    </CardContent>
+                    <input
+                        type="radio"
+                        name="paymentMethod"
+                        value="stripe"
+                        checked={
+                            value === "stripe"
+                        }
+                        onChange={() =>
+                            onChange("stripe")
+                        }
+                    />
 
-                </Card>
+                    <div>
 
-                <Card
-                    className={`cursor-pointer transition
-                        ${paymentMethod === "cod"
-                            ? "border-primary ring-2 ring-primary/20"
-                            : "hover:border-primary"
-                        }`}>
-                    <CardContent className="flex items-center gap-4 p-5">
+                        <p className="font-medium">
+                            Credit / Debit Card
+                        </p>
 
-                        <RadioGroupItem
-                            value="cod"
-                            id="cod"
-                        />
+                        <p className="text-sm text-muted-foreground">
+                            Secure payment powered by Stripe.
+                        </p>
 
-                        <Banknote className="size-6 text-primary" />
+                    </div>
 
-                        <div className="flex-1">
+                </label>
 
-                            <Label
-                                htmlFor="cod"
-                                className="cursor-pointer text-base font-semibold"
-                            >
-                                Cash on Delivery
-                            </Label>
+            </div>
 
-                            <p className="mt-2 text-xs text-orange-500">
-                                Available only for eligible locations.
-                            </p>
-                        </div>
-
-                    </CardContent>
-
-                </Card>
-
-            </RadioGroup>
-
-        </section>
+        </div>
     );
 }
