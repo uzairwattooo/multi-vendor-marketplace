@@ -43,38 +43,19 @@ export const createProductSchema = z.object({
         .default("draft"),
 
     featured: z.boolean().default(false),
-
     images: z
         .array(
             z.object({
-                url: z.url(
-                    "Please enter a valid image URL",
-                ),
+                url: z.url("Please enter a valid image URL"),
                 path: z.string().min(1),
                 isPrimary: z.boolean().default(false),
-                sortOrder: z
-                    .number()
-                    .int()
-                    .min(0)
-                    .default(0),
+                sortOrder: z.number().int().min(0).default(0),
             }),
         )
-        .max(
-            8,
-            "You can upload a maximum of 8 images",
-        )
-        .default([]), images: z
-            .array(
-                z.object({
-                    url: z.url("Please enter a valid image URL"),
-                    isPrimary: z.boolean().default(false),
-                    sortOrder: z.number().int().min(0).default(0),
-                }),
-            )
-            .max(8, "You can upload a maximum of 8 images")
-            .default([]),
+        .max(8, "You can upload a maximum of 8 images")
+        .default([]),
 });
 
 export type CreateProductInput = z.infer<
     typeof createProductSchema
->; ``
+>;

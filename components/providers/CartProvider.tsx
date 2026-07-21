@@ -4,7 +4,6 @@ import {
     createContext,
     useCallback,
     useContext,
-    useEffect,
     useMemo,
     useState,
 } from "react";
@@ -51,7 +50,7 @@ export default function CartProvider({
 
     const [items, setItems] = useState<CartItem[]>([]);
     const [loading, setLoading] = useState(false);
-    const [refreshing, setRefreshing] = useState(false);
+    const [, setRefreshing] = useState(false);
 
     const loadCart = useCallback(async () => {
         setRefreshing(true);

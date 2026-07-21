@@ -2,6 +2,7 @@ export type PublicProduct = {
     id: string;
     name: string;
     slug: string;
+    storeId: string;
     description: string | null;
     category: string;
     brand: string | null;

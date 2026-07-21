@@ -1,11 +1,10 @@
 "use server";
 
-import { headers } from "next/headers";
-import { and, desc, eq, sql } from "drizzle-orm";
-
+import { and, desc, eq, count } from "drizzle-orm";
 import { auth } from "@/lib/auth";
 import { db } from "@/db";
-import { order } from "@/db/schema";
+import { order, wishlist } from "@/db/schema";
+import { headers } from "next/headers";
 
 export async function getBuyerDashboard() {
     const session = await auth.api.getSession({
@@ -23,6 +22,7 @@ export async function getBuyerDashboard() {
         pendingOrders,
         deliveredOrders,
         recentOrders,
+        [wishlistResult],
     ] = await Promise.all([
         db.$count(order, eq(order.buyerId, buyerId)),
 
@@ -57,13 +57,20 @@ export async function getBuyerDashboard() {
 
             limit: 5,
         }),
+
+        db
+            .select({
+                total: count(),
+            })
+            .from(wishlist)
+            .where(eq(wishlist.userId, buyerId)),
     ]);
 
     return {
         totalOrders,
         pendingOrders,
         deliveredOrders,
-        wishlist: 0, // baad me replace karenge
+        wishlist: Number(wishlistResult.total),
         recentOrders,
     };
 }

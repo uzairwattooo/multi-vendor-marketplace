@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import {
+    Heart,
     Menu,
     Search,
     ShoppingCart,
@@ -9,7 +10,7 @@ import {
 } from "lucide-react";
 import Container from "@/components/common/Container";
 import { Button, buttonVariants } from "@/components/ui/button";
-import { useEffect, useState } from "react";
+import { useSyncExternalStore } from "react";
 import {
     Sheet,
     SheetContent,
@@ -18,6 +19,8 @@ import {
 import { cn } from "@/lib/utils";
 import UserMenu from "../auth/UserMenu";
 import { useCart } from "@/components/providers/CartProvider";
+import DashboardButton from "./DashboardButton";
+
 
 
 const links = [
@@ -33,71 +36,19 @@ type NavbarUser = {
 
 type NavbarClientProps = {
     user: NavbarUser | null;
+    wishlistCount: number;
 };
 export default function NavbarClient({
     user,
+    wishlistCount,
 }: NavbarClientProps) {
     const { totalItems } = useCart();
-    const [mounted, setMounted] = useState<boolean>(false);
-
-    useEffect(() => {
-        setMounted(true);
-    }, []);
-    const normalizedRole = user?.role?.trim().toLowerCase();
-
-    function DashboardButton({
-        mobile = false,
-    }: {
-        mobile?: boolean;
-    }) {
-        const className = cn(
-            buttonVariants(),
-            mobile && "w-full",
-        );
-
-        if (normalizedRole === "seller") {
-            return (
-                <Link
-                    href="/seller/dashboard"
-                    className={className}
-                >
-                    Seller Dashboard
-                </Link>
-            );
-        }
-
-        if (normalizedRole === "admin") {
-            return (
-                <Link
-                    href="/admin"
-                    className={className}
-                >
-                    Admin Dashboard
-                </Link>
-            );
-        }
-        if (normalizedRole === "buyer") {
-            return (
-                <Link
-                    href="/dashboard"
-                    className={className}
-                >
-                    Dashboard
-                </Link>
-            );
-        }
-
-        return (
-            <Link
-                href="/seller/onboarding"
-                className={className}
-            >
-                Become a Seller
-            </Link>
-        );
-    }
-
-
+    
+    const mounted = useSyncExternalStore(
+        () => () => { },
+        () => true,
+        () => false
+    );
     return (
         <header className="sticky top-0 z-50 border-b bg-background/90 backdrop-blur-md">
             <Container>
@@ -139,7 +90,16 @@ export default function NavbarClient({
                         >
                             <Search className="size-5" />
                         </Button>
+                        <Link
+                            href="/wishlist"
+                            className="relative flex items-center justify-center"
+                        >
+                            <Heart className="size-6" />
 
+                            <span className="absolute -right-2 -top-1.5 flex h-5 w-5 items-center justify-center rounded-full bg-[#7C3AED] text-xs text-white">
+                                {wishlistCount}
+                            </span>
+                        </Link>
                         <Link
                             href="/cart"
                             aria-label="Open cart"
@@ -162,7 +122,7 @@ export default function NavbarClient({
 
                         <UserMenu />
 
-                        <DashboardButton />
+                        <DashboardButton role={user?.role} />
                     </div>
                     <Sheet>
                         <SheetTrigger
@@ -205,7 +165,7 @@ export default function NavbarClient({
                                         </Link>
                                     )}
 
-                                    <DashboardButton mobile />
+                                    <DashboardButton role={user?.role} mobile />
                                 </div>
                             </div>
                         </SheetContent>

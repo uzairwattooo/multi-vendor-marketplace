@@ -6,7 +6,7 @@ import { Switch } from "@/components/ui/switch";
 
 export default function ShippingSettings() {
     return (
-        <section className="space-y-6">
+        <section className="space-y-6 bg-white p-5 rounded-xl border-1 border-black/10">
 
             <div className="grid gap-5 md:grid-cols-2">
 

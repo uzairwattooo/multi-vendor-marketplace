@@ -142,7 +142,7 @@ export default function ProfileForm({
                 <Image
                     src={
                         preview ||
-                        "/images/avatar.png"
+                        "/placeholder.png"
                     }
                     alt="Profile"
                     width={100}

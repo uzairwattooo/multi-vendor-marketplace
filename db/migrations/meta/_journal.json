@@ -141,6 +141,27 @@
       "when": 1784576240869,
       "tag": "0019_huge_warbird",
       "breakpoints": true
+    },
+    {
+      "idx": 20,
+      "version": "7",
+      "when": 1784637019490,
+      "tag": "0020_wise_skaar",
+      "breakpoints": true
+    },
+    {
+      "idx": 21,
+      "version": "7",
+      "when": 1784638476568,
+      "tag": "0021_rapid_network",
+      "breakpoints": true
+    },
+    {
+      "idx": 22,
+      "version": "7",
+      "when": 1784660771200,
+      "tag": "0022_remarkable_namorita",
+      "breakpoints": true
     }
   ]
 }

@@ -14,4 +14,5 @@ export type MarketplaceProduct = {
     storeSlug: string;
     rating: number;
     reviewCount: number;
+    isWishlisted: boolean;
 };

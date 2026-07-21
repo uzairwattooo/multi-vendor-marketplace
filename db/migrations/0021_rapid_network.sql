@@ -1,0 +1,3 @@
+CREATE TYPE "public"."seller_payout_status" AS ENUM('pending', 'processing', 'paid');--> statement-breakpoint
+ALTER TABLE "payment" ALTER COLUMN "seller_payout_status" SET DEFAULT 'pending'::"public"."seller_payout_status";--> statement-breakpoint
+ALTER TABLE "payment" ALTER COLUMN "seller_payout_status" SET DATA TYPE "public"."seller_payout_status" USING "seller_payout_status"::"public"."seller_payout_status";

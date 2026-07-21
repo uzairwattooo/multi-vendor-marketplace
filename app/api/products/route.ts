@@ -1,23 +1,17 @@
-import {
-    and,
-    count,
-    desc,
-    eq,
-    ilike,
-    or,
-    sql,
-} from "drizzle-orm";
+import { and, count, desc, eq, ilike, or, sql, } from "drizzle-orm";
 import { NextResponse } from "next/server";
-
 import { db } from "@/db";
-import {
-    product,
-    productImage,
-    store,
-} from "@/db/schema";
+import { product, productImage, store, } from "@/db/schema";
+import { auth } from "@/lib/auth";
+import { headers } from "next/headers";
+import { wishlist } from "@/db/schema";
+
 
 export async function GET(request: Request) {
     try {
+        const session = await auth.api.getSession({
+            headers: await headers(),
+        });
         const { searchParams } = new URL(request.url);
 
         const search = searchParams.get("search")?.trim() || "";
@@ -78,6 +72,16 @@ export async function GET(request: Request) {
                 storeId: store.id,
                 storeName: store.name,
                 storeSlug: store.slug,
+                isWishlisted: session?.user
+                    ? sql<boolean>`
+                    EXISTS (
+                        SELECT 1
+                        FROM ${wishlist}
+                        WHERE ${wishlist.productId} = ${product.id}
+                        AND ${wishlist.userId} = ${session.user.id}
+                    )
+                `
+                    : sql<boolean>`false`,
                 image: sql<string | null>`
                     (
                         SELECT ${productImage.url}

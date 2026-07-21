@@ -1,34 +1,26 @@
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
-
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
+import { getPendingPayoutOrders } from "@/lib/actions/payout";
+import { Card,CardTitle,CardHeader,CardContent } from "@/components/ui/card";
 
-const orders = [
-    {
-        id: "ORD-1001",
-        customer: "Muhammad Ali",
-        amount: 3500,
-        status: "Pending",
-        expected: "22 Jul 2026",
-    },
-    {
-        id: "ORD-1002",
-        customer: "Ahmed Khan",
-        amount: 2400,
-        status: "Pending",
-        expected: "22 Jul 2026",
-    },
-    {
-        id: "ORD-1003",
-        customer: "Usman",
-        amount: 5800,
-        status: "Pending",
-        expected: "23 Jul 2026",
-    },
-];
 
-export default function PendingPayoutOrders() {
+
+export default async function PendingPayoutOrders() {
+    const orders = await getPendingPayoutOrders();
+    if (orders.length === 0) {
+    return (
+        <Card>
+            <CardHeader>
+                <CardTitle>Pending Payout Orders</CardTitle>
+            </CardHeader>
+
+            <CardContent className="py-10 text-center text-muted-foreground">
+                No pending payout orders.
+            </CardContent>
+        </Card>
+    );
+}
     return (
         <section className="rounded-2xl border bg-card p-6 shadow-sm">
             <div className="mb-6 flex items-center justify-between">
@@ -40,7 +32,7 @@ export default function PendingPayoutOrders() {
                         Orders that will be included in your upcoming payout.
                     </p>
                 </div>
-                <Link  href="/seller/orders">
+                <Link href="/seller/orders">
                     View Orders
                     <ArrowRight className="ml-2 size-4" />
                 </Link>
@@ -73,14 +65,13 @@ export default function PendingPayoutOrders() {
                                 className="border-b"
                             >
                                 <td className="py-4 font-medium">
-                                    {order.id}
+                                    {order.orderNumber}
                                 </td>
                                 <td>
                                     {order.customer}
                                 </td>
                                 <td className="text-right font-semibold">
-                                    Rs.{" "}
-                                    {order.amount.toLocaleString()}
+                                    Rs. {Number(order.amount).toLocaleString()}
                                 </td>
                                 <td className="text-center">
                                     <Badge
@@ -90,7 +81,9 @@ export default function PendingPayoutOrders() {
                                     </Badge>
                                 </td>
                                 <td className="text-right text-muted-foreground">
-                                    {order.expected}
+                                    {order.expected
+                                        ? new Date(order.expected).toLocaleDateString()
+                                        : "Pending"}
                                 </td>
                             </tr>
                         ))}

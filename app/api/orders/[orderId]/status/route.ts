@@ -18,34 +18,27 @@ export async function PATCH(
     { params }: RouteContext,
 ) {
     const csrfCheck = validateCsrf(request);
-
     if (!csrfCheck.success) {
         return csrfCheck.response;
     }
-
     try {
         const session = await auth.api.getSession({
             headers: await headers(),
         });
-
         if (!session?.user) {
             return NextResponse.json(
                 { message: "Authentication required" },
                 { status: 401 },
             );
         }
-
         if (session.user.role !== "seller") {
             return NextResponse.json(
                 { message: "Seller access required" },
                 { status: 403 },
             );
         }
-
         const { orderId } = await params;
-
         const body = await request.json();
-
         const status = body.status as
             | "pending"
             | "confirmed"
@@ -54,7 +47,6 @@ export async function PATCH(
             | "delivered"
             | "cancelled"
             | "refunded";
-
         const validStatuses = [
             "pending",
             "confirmed",
@@ -64,14 +56,12 @@ export async function PATCH(
             "cancelled",
             "refunded",
         ];
-
         if (!validStatuses.includes(status)) {
             return NextResponse.json(
                 { message: "Invalid order status" },
                 { status: 400 },
             );
         }
-
         const [sellerStore] = await db
             .select({
                 id: store.id,
@@ -91,7 +81,6 @@ export async function PATCH(
                 { status: 404 },
             );
         }
-
         const [existingOrder] = await db
             .select({
                 id: order.id,
@@ -104,27 +93,23 @@ export async function PATCH(
                 ),
             )
             .limit(1);
-
         if (!existingOrder) {
             return NextResponse.json(
                 { message: "Order not found" },
                 { status: 404 },
             );
         }
-
         await db
             .update(order)
             .set({
                 status,
             })
             .where(eq(order.id, orderId));
-
         return NextResponse.json({
             message: "Order status updated successfully",
         });
     } catch (error) {
         console.error("UPDATE_ORDER_STATUS_ERROR:", error);
-
         return NextResponse.json(
             {
                 message: "Unable to update order status",

@@ -1,10 +1,4 @@
-import {
-    Accordion,
-    AccordionContent,
-    AccordionItem,
-    AccordionTrigger,
-} from "@/components/ui/accordion";
-
+import {Accordion,AccordionContent,AccordionItem,AccordionTrigger,} from "@/components/ui/accordion";
 import GeneralInformation from "@/components/seller/settings/GeneralInformation";
 import BusinessInformation from "@/components/seller/settings/BusinessInformation";
 import AddressInformation from "@/components/seller/settings/AddressInformation";
@@ -22,12 +16,10 @@ export default function SellerSettingsPage() {
                 <h1 className="text-3xl font-bold">
                     Store Settings
                 </h1>
-
                 <p className="text-muted-foreground mt-2">
                     Manage your store information and preferences.
                 </p>
             </div>
-
             <Accordion
                 type="multiple"
                 className="space-y-4"

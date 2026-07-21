@@ -35,6 +35,10 @@ export const paymentStatusEnum = pgEnum("payment_status", [
     "refunded",
 ]);
 
+export const sellerPayoutStatusEnum = pgEnum(
+    "seller_payout_status",
+    ["pending", "processing", "paid"]
+);
 export const order = pgTable(
     "order",
     {
@@ -49,7 +53,7 @@ export const order = pgTable(
             .references(() => user.id, {
                 onDelete: "restrict",
             }),
-stripeCheckoutSessionId: text("stripe_checkout_session_id"),
+        stripeCheckoutSessionId: text("stripe_checkout_session_id"),
         storeId: text("store_id")
             .notNull()
             .references(() => store.id, {
@@ -268,14 +272,11 @@ export const payment = pgTable(
 
         provider: text("provider")
             .notNull(),
-
         transactionId: text("transaction_id"),
-
         amount: numeric("amount", {
             precision: 12,
             scale: 2,
         }).notNull(),
-
         platformFee: numeric("platform_fee", {
             precision: 12,
             scale: 2,
@@ -291,8 +292,11 @@ export const payment = pgTable(
         status: paymentStatusEnum("status")
             .default("pending")
             .notNull(),
-
         paidAt: timestamp("paid_at"),
+        sellerPayoutStatus: sellerPayoutStatusEnum("seller_payout_status")
+            .default("pending")
+            .notNull(),
+        sellerPaidAt: timestamp("seller_paid_at"),
 
         createdAt: timestamp("created_at")
             .defaultNow()

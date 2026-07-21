@@ -1,4 +1,4 @@
-import { and, count, eq, gte, sql, or, desc, sum } from "drizzle-orm";
+import { and, count, eq, gte, sql, desc, } from "drizzle-orm";
 import { db } from "@/db";
 import { order, product, store } from "@/db/schema";
 import { orderItem } from "@/db/schema/order";

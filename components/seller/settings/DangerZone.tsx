@@ -9,63 +9,43 @@ import { Textarea } from "@/components/ui/textarea";
 
 export default function DangerZone() {
     return (
-        <section className="space-y-8">
-
-            {/* Vacation Mode */}
-
+        <section className="space-y-8 bg-white p-5 rounded-xl border-1 border-black/10">
             <div className="rounded-xl border p-6">
-
                 <div className="flex items-center justify-between">
-
                     <div>
                         <h3 className="font-semibold">
                             Vacation Mode
                         </h3>
-
                         <p className="text-sm text-muted-foreground">
                             Temporarily stop receiving new orders.
                         </p>
                     </div>
-
                     <Switch />
-
                 </div>
-
                 <div className="mt-6 grid gap-5 md:grid-cols-2">
-
                     <div>
                         <label className="mb-2 block text-sm font-medium">
                             Start Date
                         </label>
-
                         <Input type="date" />
                     </div>
-
                     <div>
                         <label className="mb-2 block text-sm font-medium">
                             End Date
                         </label>
-
                         <Input type="date" />
                     </div>
-
                     <div className="md:col-span-2">
                         <label className="mb-2 block text-sm font-medium">
                             Vacation Message
                         </label>
-
                         <Textarea
                             rows={4}
                             placeholder="We'll be back soon..."
                         />
                     </div>
-
                 </div>
-
             </div>
-
-            {/* Store Visibility */}
-
             <div className="rounded-xl border p-6">
 
                 <h3 className="font-semibold">
@@ -109,9 +89,6 @@ export default function DangerZone() {
                 </div>
 
             </div>
-
-            {/* Delete */}
-
             <div className="rounded-xl border border-red-300 bg-red-50 p-6">
 
                 <div className="flex items-start gap-4">

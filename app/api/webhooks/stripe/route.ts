@@ -6,6 +6,7 @@ import { db } from "@/db";
 import { checkoutSession, cart, cartItem } from "@/db/schema";
 import { eq } from "drizzle-orm";
 import { createOrder } from "@/lib/order/create-order";
+import type { ShippingFormValues } from "@/lib/validations/shipping-schema";
 
 export async function POST(
     req: Request,
@@ -75,7 +76,7 @@ export async function POST(
             userId: session.userId,
             paymentMethod: "stripe",
             stripePaymentIntentId: paymentIntent.id,
-            shipping: session.shipping as any,
+            shipping: session.shipping as ShippingFormValues,
         });
     } catch (error) {
         console.error("Create Order Error:", error);

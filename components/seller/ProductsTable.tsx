@@ -16,7 +16,6 @@ import {
     AlertDialogFooter,
     AlertDialogHeader,
     AlertDialogTitle,
-    AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import {
     Edit,
@@ -101,10 +100,6 @@ export default function ProductsTable() {
             return matchesSearch && matchesStatus;
         });
     }, [products, search, status]);
-
-    function handleDelete(productId: string) {
-        deleteMutation.mutate(productId);
-    }
 
     if (isLoading) {
         return (
@@ -228,10 +223,6 @@ export default function ProductsTable() {
 
                         <tbody>
                             {filteredProducts.map((product) => {
-                                const isDeleting =
-                                    deleteMutation.isPending &&
-                                    deleteMutation.variables === product.id;
-
                                 const lowStock =
                                     product.stock <=
                                     product.lowStockThreshold;

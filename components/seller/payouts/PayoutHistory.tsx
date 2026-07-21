@@ -5,43 +5,27 @@ import {
 } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
+import { getPayoutHistory } from "@/lib/actions/seller/get-payout-history";
 
-const payouts = [
-    {
-        id: "PAYOUT-001",
-        stripeId: "po_3QAbCdEfGh",
-        amount: 18500,
-        method: "Bank Account",
-        date: "18 Jul 2026",
-        status: "Paid",
-    },
-    {
-        id: "PAYOUT-002",
-        stripeId: "po_3XYzAbCdEf",
-        amount: 9200,
-        method: "Bank Account",
-        date: "12 Jul 2026",
-        status: "Paid",
-    },
-    {
-        id: "PAYOUT-003",
-        stripeId: "po_9MnOpQrSt",
-        amount: 7600,
-        method: "Bank Account",
-        date: "22 Jul 2026",
-        status: "Pending",
-    },
-    {
-        id: "PAYOUT-004",
-        stripeId: "po_7UvWxYz12",
-        amount: 4100,
-        method: "Bank Account",
-        date: "03 Jul 2026",
-        status: "Failed",
-    },
-];
 
-export default function PayoutHistory() {
+
+
+export default async function PayoutHistory() {
+    const payouts = await getPayoutHistory();
+
+    if (payouts.length === 0) {
+        return (
+            <section className="rounded-2xl border bg-card p-6 shadow-sm">
+                <h2 className="text-xl font-semibold">
+                    Payout History
+                </h2>
+
+                <p className="mt-6 text-center text-muted-foreground">
+                    No payout history found.
+                </p>
+            </section>
+        );
+    }
     return (
         <section className="rounded-2xl border bg-card p-6 shadow-sm">
 
@@ -107,12 +91,11 @@ export default function PayoutHistory() {
                                 </td>
 
                                 <td className="font-mono text-sm text-muted-foreground">
-                                    {payout.stripeId}
+                                    {payout.stripeId ?? "-"}
                                 </td>
 
                                 <td className="text-right font-semibold">
-                                    Rs.{" "}
-                                    {payout.amount.toLocaleString()}
+                                    Rs. {Number(payout.amount).toLocaleString()}
                                 </td>
 
                                 <td className="text-center">
@@ -120,30 +103,32 @@ export default function PayoutHistory() {
                                 </td>
 
                                 <td className="text-center">
-                                    {payout.status === "Paid" && (
+                                    {payout.status === "paid" && (
                                         <Badge className="bg-green-600 hover:bg-green-600">
                                             <CheckCircle2 className="mr-1 size-3" />
                                             Paid
                                         </Badge>
                                     )}
 
-                                    {payout.status === "Pending" && (
+                                    {payout.status === "pending" && (
                                         <Badge className="bg-yellow-500 hover:bg-yellow-500">
                                             <Clock3 className="mr-1 size-3" />
                                             Pending
                                         </Badge>
                                     )}
 
-                                    {payout.status === "Failed" && (
-                                        <Badge variant="destructive">
-                                            <XCircle className="mr-1 size-3" />
-                                            Failed
+                                    {payout.status === "processing" && (
+                                        <Badge className="bg-blue-600 hover:bg-blue-600">
+                                            <Clock3 className="mr-1 size-3" />
+                                            Processing
                                         </Badge>
                                     )}
                                 </td>
 
                                 <td className="text-right text-muted-foreground">
-                                    {payout.date}
+                                    {payout.date
+                                        ? new Date(payout.date).toLocaleDateString()
+                                        : "-"}
                                 </td>
 
                             </tr>

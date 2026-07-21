@@ -2,19 +2,10 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "@tanstack/react-query";
-import {
-  ArrowRight,
-  Building2,
-  CheckCircle2,
-  Loader2,
-  MapPin,
-  ShieldCheck,
-  Store,
-} from "lucide-react";
+import { ArrowRight, Building2, Loader2, MapPin, ShieldCheck, Store, } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import { toast } from "sonner";
-
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -60,7 +51,10 @@ export default function StoreOnboardingForm({
       country: "Pakistan",
     },
   });
-
+  const description = useWatch({
+    control: form.control,
+    name: "description",
+  });
   const mutation = useMutation({
     mutationFn: createStore,
 
@@ -152,7 +146,7 @@ export default function StoreOnboardingForm({
 
               <div className="mt-2 flex justify-end">
                 <span className="text-xs text-muted-foreground">
-                  {form.watch("description")?.length || 0}/1000
+                  {description?.length ?? 0}/1000
                 </span>
               </div>
             </FormField>

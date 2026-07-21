@@ -100,10 +100,7 @@ export async function POST(
             });
         await db.insert(checkoutSession).values({
             userId: session.user.id,
-
-            paymentIntentId:
-                paymentIntent.id,
-
+            paymentIntentId:paymentIntent.id,
             shipping,
         });
         return NextResponse.json({

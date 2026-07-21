@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input";
 
 export default function SocialLinks() {
     return (
-        <section className="space-y-6">
+        <section className="space-y-6 bg-white p-5 rounded-xl border-1 border-black/10">
 
             <div>
                 <h3 className="text-xl font-semibold">

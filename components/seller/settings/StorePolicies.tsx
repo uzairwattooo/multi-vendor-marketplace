@@ -5,7 +5,7 @@ import { Textarea } from "@/components/ui/textarea";
 
 export default function StorePolicies() {
     return (
-        <section className="space-y-6">
+        <section className="space-y-6 bg-white p-5 rounded-xl border-1 border-black/10">
 
             <div>
 

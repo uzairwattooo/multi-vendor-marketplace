@@ -24,7 +24,7 @@ export default function PaymentSettings() {
         }
     };
     return (
-        <section className="rounded-2xl border bg-card p-6 shadow-sm">
+        <section className="rounded-2xl border bg-card p-6 shadow-sm ">
             <div className="rounded-xl border p-6">
 
                 <h3 className="text-lg font-semibold">

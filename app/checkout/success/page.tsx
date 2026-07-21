@@ -19,7 +19,7 @@ export default function CheckoutSuccessPage() {
                 <p className="mt-4 text-muted-foreground">
                     Thank you for your order.
                     <br />
-                    We've received your order successfully and it's now being processed.
+                    We&apos;ve received your order successfully and it&apos;s now being processed.
                 </p>
 
                 <div className="mt-8 rounded-xl bg-muted p-5 text-left">
@@ -34,7 +34,7 @@ export default function CheckoutSuccessPage() {
 
                         <li>✓ Your order is being prepared.</li>
 
-                        <li>✓ You'll receive updates as your order progresses.</li>
+                        <li>✓ You&apos;ll receive updates as your order progresses.</li>
                     </ul>
                 </div>
 

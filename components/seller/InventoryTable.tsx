@@ -1,30 +1,13 @@
 "use client";
 
-import {
-    AlertTriangle,
-    Boxes,
-    CheckCircle2,
-    Loader2,
-    PackageX,
-    Search,
-    Save,
-} from "lucide-react";
-import {
-    useMutation,
-    useQuery,
-    useQueryClient,
-} from "@tanstack/react-query";
+import {AlertTriangle,Boxes,CheckCircle2,Loader2,PackageX,Search,Save,} from "lucide-react";
+import {useMutation,useQuery,useQueryClient,} from "@tanstack/react-query";
 import { useMemo, useState } from "react";
 import { toast } from "sonner";
-
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import {
-    getInventory,
-    type InventoryProduct,
-    updateInventory,
-} from "@/services/inventory-service";
-import { cn } from "@/lib/utils";
+import {getInventory,type InventoryProduct,updateInventory,} from "@/services/inventory-service";
+
 
 type InventoryDraft = {
     stock: string;
@@ -33,14 +16,9 @@ type InventoryDraft = {
 
 export default function InventoryTable() {
     const queryClient = useQueryClient();
-
     const [search, setSearch] = useState("");
     const [filter, setFilter] = useState("all");
-
-    const [drafts, setDrafts] = useState<
-        Record<string, InventoryDraft>
-    >({});
-
+    const [drafts, setDrafts] = useState<Record<string, InventoryDraft>>({});
     const {
         data: products = [],
         isLoading,

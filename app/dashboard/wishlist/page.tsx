@@ -1,40 +1,17 @@
 import Link from "next/link";
 import Image from "next/image";
-import { Heart, ShoppingCart, Trash2 } from "lucide-react";
-
+import { Heart, ShoppingCart,} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
-    Card,
-    CardContent,
-    CardHeader,
-    CardTitle,
+    Card, CardContent, CardHeader, CardTitle,
 } from "@/components/ui/card";
+import { getUserWishlist } from "@/lib/wishlist/get-user-wishlist";
 export const dynamic = "force-dynamic";
-const wishlist = [
-    {
-        id: "1",
-        name: "Apple AirPods Pro",
-        slug: "apple-airpods-pro",
-        image: "https://placehold.co/300x300",
-        price: "Rs. 45,000",
-    },
-    {
-        id: "2",
-        name: "Samsung Galaxy Watch",
-        slug: "samsung-galaxy-watch",
-        image: "https://placehold.co/300x300",
-        price: "Rs. 68,000",
-    },
-    {
-        id: "3",
-        name: "Logitech MX Master 3",
-        slug: "logitech-mx-master-3",
-        image: "https://placehold.co/300x300",
-        price: "Rs. 31,500",
-    },
-];
+import RemoveWishlistButton from "@/components/marketplace/RemoveWishlistButton";
 
-export default function WishlistPage() {
+export default async function WishlistPage() {
+    const wishlist = await getUserWishlist();
+
     return (
         <div className="space-y-6">
             <div>
@@ -43,7 +20,7 @@ export default function WishlistPage() {
                 </h1>
 
                 <p className="mt-1 text-muted-foreground">
-                    Products you've saved for later.
+                    Products you&apos;ve saved for later.
                 </p>
             </div>
 
@@ -64,7 +41,7 @@ export default function WishlistPage() {
                                 <Link href={`/products/${item.slug}`}>
                                     <div className="relative aspect-square">
                                         <Image
-                                            src={item.image}
+                                            src={item.image || "/placeholder.png"}
                                             alt={item.name}
                                             fill
                                             className="object-cover"
@@ -79,12 +56,12 @@ export default function WishlistPage() {
                                         </h3>
 
                                         <p className="mt-1 text-lg font-bold text-primary">
-                                            {item.price}
+                                            Rs. {Number(item.salePrice ?? item.price).toLocaleString()}
                                         </p>
                                     </div>
 
                                     <div className="flex gap-2">
-                                        <Button  nativeButton={false}
+                                        <Button nativeButton={false}
                                             className="flex-1"
                                             render={
                                                 <Link
@@ -96,12 +73,9 @@ export default function WishlistPage() {
                                             Buy Now
                                         </Button>
 
-                                        <Button 
-                                            variant="outline"
-                                            size="icon"
-                                        >
-                                            <Trash2 className="size-4 text-red-500" />
-                                        </Button>
+                                        <RemoveWishlistButton
+                                            productId={item.id}
+                                        />
                                     </div>
                                 </div>
                             </div>
@@ -120,7 +94,7 @@ export default function WishlistPage() {
                                 Save your favourite products to buy later.
                             </p>
 
-                            <Button  nativeButton={false}
+                            <Button nativeButton={false}
                                 className="mt-6"
                                 render={<Link href="/products" />}
                             >

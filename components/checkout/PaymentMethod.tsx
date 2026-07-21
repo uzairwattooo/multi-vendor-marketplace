@@ -1,6 +1,5 @@
 "use client";
 
-import { Label } from "@/components/ui/label";
 
 type Props = {
     value: "cod" | "stripe";

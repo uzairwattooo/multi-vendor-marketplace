@@ -2,14 +2,14 @@
 
 import { useTransition } from "react";
 import { useRouter } from "next/navigation";
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
 import { createAddress, updateAddress, } from "@/lib/actions/address";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
-import { addressSchema, type AddressSchema,} from "@/lib/validations/address-schema";
+import { addressSchema, type AddressSchema, } from "@/lib/validations/address-schema";
 
 type Props = {
     address?: {
@@ -38,11 +38,11 @@ export default function AddressForm({
         register,
         handleSubmit,
         setValue,
-        watch,
+        control,
         formState: { errors },
     } = useForm<AddressSchema>({
         resolver: zodResolver(addressSchema),
-        
+
         defaultValues: {
             fullName: address?.fullName ?? "",
             phone: address?.phone ?? "",
@@ -61,7 +61,10 @@ export default function AddressForm({
                 false,
         },
     });
-
+    const isDefault = useWatch({
+        control,
+        name: "isDefault",
+    });
     async function onSubmit(
         values: AddressSchema,
     ) {
@@ -220,12 +223,9 @@ export default function AddressForm({
             <div className="flex items-center gap-3 rounded-lg border p-4">
 
                 <Checkbox
-                    checked={watch("isDefault")}
+                    checked={isDefault}
                     onCheckedChange={(checked) =>
-                        setValue(
-                            "isDefault",
-                            Boolean(checked)
-                        )
+                        setValue("isDefault", Boolean(checked))
                     }
                 />
 

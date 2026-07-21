@@ -76,7 +76,7 @@ export default function BuyerSidebar({
                         alt={user.name}
                         width={44}
                         height={44}
-                        className="size-11 object-cover rounded-2xl"
+                        className="size-11 object-cover rounded-full"
                     />
                 ) : (
                     <User className="size-5 text-white" />

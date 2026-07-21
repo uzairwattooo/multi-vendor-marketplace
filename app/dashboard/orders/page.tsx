@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow, } from "@/components/ui/table";
 import { getBuyerOrders } from "@/lib/actions/order";
+import DeleteOrderButton from "@/components/buyer/DeleteOrderButton";
 export const dynamic = "force-dynamic";
 
 function getStatusClass(status: string) {
@@ -52,7 +53,7 @@ export default async function BuyerOrdersPage() {
                                 <TableHead>Total</TableHead>
                                 <TableHead>Payment</TableHead>
                                 <TableHead>Status</TableHead>
-                                <TableHead className="text-right">
+                                <TableHead className="text-center">
                                     Action
                                 </TableHead>
                             </TableRow>
@@ -80,13 +81,20 @@ export default async function BuyerOrdersPage() {
                                         </span>
                                     </TableCell>
                                     <TableCell className="text-right">
-                                        <Button nativeButton={false}
-                                            variant="outline"
-                                            size="sm"
-                                            render={<Link href={`dashboard/orders/${order.id}`} />}>
-                                            <Eye className="mr-2 size-4" />
-                                            View
-                                        </Button>
+                                        <div className="flex justify-center gap-2">
+                                            <Button nativeButton={false}
+                                                variant="outline"
+                                                size="sm"
+                                                render={<Link href={`/orders/${order.id}`} />}>
+                                                <Eye className="mr-2 size-4" />
+                                                View
+                                            </Button>
+
+                                            {order.status === "pending" && (
+                                                <DeleteOrderButton orderId={order.id} />
+                                            )}
+                                        </div>
+
                                     </TableCell>
                                 </TableRow>
                             ))}

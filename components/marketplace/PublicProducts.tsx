@@ -8,14 +8,12 @@ import {
     Loader2,
     PackageSearch,
     Search,
-    ShoppingCart,
 } from "lucide-react";
 import {
     getPublicProducts,
     type PublicProduct,
     type ProductsResponse,
 } from "@/services/public-product-service";
-
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import AddToCartButton from "./AddToCartButton";

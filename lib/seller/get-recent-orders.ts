@@ -1,12 +1,6 @@
 import { and, desc, eq } from "drizzle-orm";
-
 import { db } from "@/db";
-import {
-    order,
-    payment,
-    store,
-    user,
-} from "@/db/schema";
+import {order,store,user,} from "@/db/schema";
 
 export async function getRecentOrders(userId: string) {
     const [sellerStore] = await db
@@ -21,11 +15,9 @@ export async function getRecentOrders(userId: string) {
             ),
         )
         .limit(1);
-
     if (!sellerStore) {
         return [];
     }
-
     return await db
         .select({
             id: order.id,

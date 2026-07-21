@@ -36,7 +36,6 @@ async function refreshStripeStatus() {
         return;
     }
 
-    // Page refresh
     window.location.reload();
 }
 
@@ -106,7 +105,7 @@ export default function StripeStatus({
 
             <div className="mt-8 flex flex-wrap gap-3">
 
-                <Button onClick={openStripeDashboard}>
+                <Button onClick={openStripeDashboard} >
                     <ExternalLink className="mr-2 size-4" />
                     Manage Stripe
                 </Button>

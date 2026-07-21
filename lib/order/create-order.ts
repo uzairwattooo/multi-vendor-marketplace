@@ -1,5 +1,5 @@
 import { db } from "@/db";
-import { cart, cartItem, order, orderItem, product, shippingAddress, } from "@/db/schema";
+import { cart, cartItem, order, orderItem, payment, product, shippingAddress, } from "@/db/schema";
 import { and, eq, sql, } from "drizzle-orm";
 import { generateOrderNumber } from "./generate-order-number";
 import { groupCartBySeller } from "./group-cart-by-seller";
@@ -68,8 +68,8 @@ export async function createOrder(
         const createdOrders: string[] = [];
         for (const seller of sellerGroups) {
             const subtotal = seller.items.reduce(
-                (total: number,item: CartItemType) =>
-                    total + item.price * item.quantity,0,);
+                (total: number, item: CartItemType) =>
+                    total + item.price * item.quantity, 0,);
             const platformFee = Math.round(subtotal * 0.10);
             const orderId = crypto.randomUUID();
 
@@ -81,8 +81,8 @@ export async function createOrder(
                 storeId: seller.storeId,
                 status: "pending",
                 paymentStatus: input.paymentMethod === "cod"
-                        ? "pending"
-                        : "paid",
+                    ? "pending"
+                    : "paid",
                 paymentMethod:
                     input.paymentMethod,
                 stripePaymentIntentId:
@@ -97,14 +97,31 @@ export async function createOrder(
                 shippingAmount: "0",
                 taxAmount: "0",
                 discountAmount: "0",
-                platformFee:
-                    platformFee.toString(),
-                sellerAmount:
-                    (
-                        subtotal - platformFee
-                    ).toString(),
             });
+            await tx.insert(payment).values({
+                orderId,
+                provider: input.paymentMethod,
+                transactionId:
+                    input.stripePaymentIntentId ?? null,
+                amount: subtotal.toString(),
+                platformFee: platformFee.toString(),
+                sellerAmount: (
+                    subtotal - platformFee
+                ).toString(),
+                status:
+                    input.paymentMethod === "cod"
+                        ? "pending"
+                        : "paid",
 
+                paidAt:
+                    input.paymentMethod === "stripe"
+                        ? new Date()
+                        : null,
+
+                sellerPayoutStatus: "pending",
+
+                sellerPaidAt: null,
+            });
             createdOrders.push(orderId);
             await tx.insert(shippingAddress).values({
                 orderId,
@@ -127,14 +144,9 @@ export async function createOrder(
                     productId: item.productId,
                     productName: item.name,
                     sku: item.sku,
-                    unitPrice:
-                        item.price.toString(),
-                    quantity:
-                        item.quantity,
-                    totalPrice: (
-                        item.price *
-                        item.quantity
-                    ).toString(),
+                    unitPrice:item.price.toString(),
+                    quantity: item.quantity,
+                    totalPrice: (item.price *item.quantity ).toString(),
                 });
                 await tx
                     .update(product)

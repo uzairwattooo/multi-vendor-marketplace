@@ -44,18 +44,30 @@ export default function OrdersTable() {
 
     return (
         <div className="space-y-7">
-            <div>
-                <p className="text-sm font-semibold uppercase tracking-[0.18em] text-primary">
-                    Order Management
-                </p>
+            <div className="flex items-center justify-between rounded-2xl border bg-card p-6 shadow-sm">
+                <div>
+                    <p className="text-xs font-semibold uppercase tracking-[0.25em] text-primary">
+                        Order Management
+                    </p>
 
-                <h1 className="mt-2 text-3xl font-bold">
-                    Orders
-                </h1>
+                    <h1 className="mt-2 text-3xl font-bold">
+                        Orders
+                    </h1>
 
-                <p className="mt-2 text-muted-foreground">
-                    Manage orders received by your store.
-                </p>
+                    <p className="mt-2 text-sm text-muted-foreground">
+                        Manage and track all orders received by your store.
+                    </p>
+                </div>
+
+                <div className="rounded-xl bg-primary/10 px-5 py-3 text-center">
+                    <p className="text-2xl font-bold text-primary">
+                        {orders.length}
+                    </p>
+
+                    <p className="text-xs text-muted-foreground">
+                        Total Orders
+                    </p>
+                </div>
             </div>
 
             {orders.length === 0 ? (
@@ -71,9 +83,9 @@ export default function OrdersTable() {
                     </p>
                 </div>
             ) : (
-                <div className="overflow-x-auto rounded-2xl border bg-card shadow-sm">
+                <div className="overflow-hidden rounded-2xl border bg-card shadow-sm">
                     <table className="w-full min-w-[1000px]">
-                        <thead className="border-b bg-muted/50">
+                        <thead className="bg-muted/40">
                             <tr>
                                 <th className="px-5 py-4 text-left text-sm">
                                     Order
@@ -103,37 +115,31 @@ export default function OrdersTable() {
                             {orders.map(
                                 (currentOrder) => (
                                     <tr
-                                        key={
-                                            currentOrder.id
-                                        }
-                                        className="border-b last:border-0"
+                                        key={currentOrder.id}
+                                        className="border-b transition-colors hover:bg-muted/40"
                                     >
                                         <td className="px-5 py-4">
-                                            <p className="font-semibold">
-                                                {
-                                                    currentOrder.orderNumber
-                                                }
-                                            </p>
+                                            <div>
+                                                <p className="font-semibold">
+                                                    {currentOrder.orderNumber}
+                                                </p>
 
-                                            <p className="mt-1 text-xs text-muted-foreground">
-                                                {new Date(
-                                                    currentOrder.createdAt,
-                                                ).toLocaleDateString()}
-                                            </p>
+                                                <span className="mt-2 inline-flex rounded-full bg-primary/10 px-2.5 py-1 text-xs font-medium text-primary">
+                                                    {new Date(currentOrder.createdAt).toLocaleDateString()}
+                                                </span>
+                                            </div>
                                         </td>
 
                                         <td className="px-5 py-4">
-                                            <p className="font-medium">
-                                                {
-                                                    currentOrder.customerName
-                                                }
-                                            </p>
+                                            <div>
+                                                <p className="font-medium">
+                                                    {currentOrder.customerName}
+                                                </p>
 
-                                            <p className="mt-1 text-xs text-muted-foreground">
-                                                {
-                                                    currentOrder.customerEmail
-                                                }
-                                            </p>
+                                                <p className="text-xs text-muted-foreground">
+                                                    {currentOrder.customerEmail}
+                                                </p>
+                                            </div>
                                         </td>
 
                                         <td className="px-5 py-4">
@@ -142,17 +148,16 @@ export default function OrdersTable() {
                                             }
                                         </td>
 
-                                        <td className="px-5 py-4 font-semibold">
-                                            Rs.{" "}
-                                            {Number(
-                                                currentOrder.totalAmount,
-                                            ).toLocaleString()}
+                                        <td className="px-10 py-4 font-semibold">
+                                            <p className="font-semibold text-primary">
+                                                Rs. {Number(currentOrder.totalAmount).toLocaleString()}
+                                            </p>
                                         </td>
 
                                         <td className="px-5 py-4 capitalize">
-                                            {
-                                                currentOrder.paymentStatus
-                                            }
+                                            <span className="rounded-full bg-muted px-3 py-1 text-xs font-medium capitalize">
+                                                {currentOrder.paymentStatus}
+                                            </span>
                                         </td>
 
                                         <td className="px-5 py-4">
@@ -168,6 +173,9 @@ export default function OrdersTable() {
                                                     currentOrder.status ===
                                                     "shipped" &&
                                                     "bg-violet-100 text-violet-700",
+                                                    currentOrder.status ===
+                                                    "confirmed" &&
+                                                    "bg-blue-100 text-blue-700",
                                                     currentOrder.status ===
                                                     "delivered" &&
                                                     "bg-emerald-100 text-emerald-700",
@@ -186,15 +194,12 @@ export default function OrdersTable() {
                                             <div className="flex justify-end">
                                                 <Link
                                                     href={`/seller/orders/${currentOrder.id}`}
-                                                    className={buttonVariants(
-                                                        {
-                                                            variant:
-                                                                "outline",
-                                                            size: "sm",
-                                                        },
-                                                    )}
+                                                    className={buttonVariants({
+                                                        variant: "outline",
+                                                        size: "sm",
+                                                    })}
                                                 >
-                                                    <Eye className="size-4" />
+                                                    <Eye className="mr-2 size-4" />
                                                     View
                                                 </Link>
                                             </div>

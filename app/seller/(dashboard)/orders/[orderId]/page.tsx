@@ -20,11 +20,9 @@ export default async function SellerOrderDetailsPage({ params }: PageProps) {
     const session = await auth.api.getSession({
         headers: await headers(),
     });
-
     if (!session?.user) {
         notFound();
     }
-
     const [sellerStore] = await db
         .select({ id: store.id })
         .from(store)
@@ -35,13 +33,10 @@ export default async function SellerOrderDetailsPage({ params }: PageProps) {
             )
         )
         .limit(1);
-
     if (!sellerStore) {
         notFound();
     }
-
     const { orderId } = await params;
-
     const [currentOrder] = await db
         .select()
         .from(order)
@@ -52,11 +47,9 @@ export default async function SellerOrderDetailsPage({ params }: PageProps) {
             )
         )
         .limit(1);
-
     if (!currentOrder) {
         notFound();
     }
-
     const [buyer] = await db
         .select({
             id: user.id,
@@ -66,19 +59,16 @@ export default async function SellerOrderDetailsPage({ params }: PageProps) {
         .from(user)
         .where(eq(user.id, currentOrder.buyerId))
         .limit(1);
-
     const [address] = await db
         .select()
         .from(shippingAddress)
         .where(eq(shippingAddress.orderId, currentOrder.id))
         .limit(1);
-
     const [paymentInfo] = await db
         .select()
         .from(payment)
         .where(eq(payment.orderId, currentOrder.id))
         .limit(1);
-
     const items = await db
         .select({
             id: orderItem.id,
@@ -102,7 +92,6 @@ export default async function SellerOrderDetailsPage({ params }: PageProps) {
         .from(orderItem)
         .leftJoin(product, eq(orderItem.productId, product.id))
         .where(eq(orderItem.orderId, currentOrder.id));
-
     return (
         <OrderDetailsClient
             order={currentOrder}

@@ -44,35 +44,44 @@ export default async function RecentOrders() {
         );
     }
     return (
-        <div className="rounded-2xl border bg-card p-6 shadow-sm">
-            <div className="mb-6 flex items-center justify-between">
-                <h2 className="text-xl font-semibold">
-                    Recent Orders
-                </h2>
+        <div className="rounded-2xl border bg-card shadow-sm">
+            <div className="flex items-center justify-between border-b p-6">
+                <div>
+                    <h2 className="text-xl font-bold">
+                        Recent Orders
+                    </h2>
 
-                <Button variant="outline">
-                    <Link href="/seller/orders">
-                        View All
-                    </Link>
+                    <p className="mt-1 text-sm text-muted-foreground">
+                        Latest customer orders from your store.
+                    </p>
+                </div>
+
+                <Button
+                    nativeButton={false}
+                    variant="outline"
+                    render={<Link href="/seller/orders" />}
+                >
+                    View All
                 </Button>
             </div>
+
             <div className="overflow-x-auto">
                 <table className="w-full">
-                    <thead>
+                    <thead className="bg-muted/40">
                         <tr className="border-b">
-                            <th className="py-3 text-left">
+                            <th className="px-6 py-4 text-left text-sm font-semibold">
                                 Order
                             </th>
 
-                            <th className="py-3 text-left">
+                            <th className="px-6 py-4 text-left text-sm font-semibold">
                                 Customer
                             </th>
 
-                            <th className="py-3 text-center">
+                            <th className="px-6 py-4 text-center text-sm font-semibold">
                                 Status
                             </th>
 
-                            <th className="py-3 text-right">
+                            <th className="px-6 py-4 text-right text-sm font-semibold">
                                 Total
                             </th>
                         </tr>
@@ -80,12 +89,27 @@ export default async function RecentOrders() {
 
                     <tbody>
                         {orders.map((order) => (
-                            <tr key={order.id} className="border-b-1 border-black/10 p-2">
-                                <td>{order.orderNumber}</td>
-                                <td>{order.customer}</td>
-                                <td>Rs. {Number(order.total).toLocaleString()}</td>
-                                <td>{order.paymentStatus}</td>
-                                <td>{order.status}</td>
+                            <tr
+                                key={order.id}
+                                className="border-b transition-colors hover:bg-muted/40"
+                            >
+                                <td className="px-6 py-4 font-medium">
+                                    {order.orderNumber}
+                                </td>
+
+                                <td className="px-6 py-4">
+                                    {order.customer}
+                                </td>
+
+                                <td className="px-6 py-4 text-center">
+                                    <span className="rounded-full bg-primary/10 px-3 py-1 text-xs font-medium capitalize text-primary">
+                                        {order.status}
+                                    </span>
+                                </td>
+
+                                <td className="px-6 py-4 text-right font-semibold text-primary">
+                                    Rs. {Number(order.total).toLocaleString()}
+                                </td>
                             </tr>
                         ))}
                     </tbody>
