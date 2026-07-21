@@ -249,8 +249,6 @@ export async function deleteAddress(id: string) {
         await db
             .delete(userAddress)
             .where(eq(userAddress.id, id));
-
-        // Agar deleted address default tha
         if (address.isDefault) {
             const nextAddress =
                 await db.query.userAddress.findFirst({

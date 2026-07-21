@@ -5,14 +5,44 @@ import { useMutation } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
-type OrderDetailsClientProps = {
-    order: unknown;
-    buyer: unknown;
-    address: unknown;
-    paymentInfo: unknown;
-    items: unknown[];
+type Order = {
+    id: string;
+    orderNumber: string;
+    status: string;
+    totalAmount: number;
 };
 
+type Buyer = {
+    name: string;
+    email: string;
+};
+
+type Address = {
+    fullName: string;
+    phone: string;
+    address: string;
+    city: string;
+    state: string;
+};
+
+type PaymentInfo = {
+    provider: string;
+};
+
+type OrderItem = {
+    id: string;
+    productName: string;
+    quantity: number;
+    totalPrice: number;
+};
+
+type OrderDetailsClientProps = {
+    order: Order;
+    buyer: Buyer | null;
+    address: Address | null;
+    paymentInfo: PaymentInfo | null;
+    items: OrderItem[];
+};
 export default function OrderDetailsClient({
     order,
     buyer,
@@ -39,20 +69,21 @@ export default function OrderDetailsClient({
         },
         onSuccess: () => {
             toast.success("Order status updated successfully");
-            router.refresh(); // Server data refresh karne ke liye
+            router.refresh();
         },
         onError: () => {
             toast.error("Unable to update order status");
         },
     });
 
-    const handleStatusChange = (status: string) => {
-        updateStatusMutation.mutate(status);
-    };
+const handleStatusChange = (status: string | null) => {
+    if (!status) return;
+
+    updateStatusMutation.mutate(status);
+};
 
     return (
         <div className="space-y-8">
-            {/* Header */}
             <div className="flex flex-col gap-4 rounded-2xl border bg-card p-6 shadow-sm md:flex-row md:items-center md:justify-between">
                 <div>
                     <p className="text-xs font-semibold uppercase tracking-[0.25em] text-primary">
