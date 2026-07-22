@@ -1,13 +1,13 @@
+import { and, eq } from "drizzle-orm";
 import { headers } from "next/headers";
 import { NextResponse } from "next/server";
-import { eq } from "drizzle-orm";
 
-import { auth } from "@/lib/auth";
-import { stripe } from "@/lib/stripe";
 import { db } from "@/db";
 import { store } from "@/db/schema";
+import { auth } from "@/lib/auth";
+import { stripe } from "@/lib/stripe";
 
-export async function POST() {
+export async function POST(request: Request) {
     try {
         const session = await auth.api.getSession({
             headers: await headers(),
@@ -21,55 +21,71 @@ export async function POST() {
         }
 
         const [sellerStore] = await db
-            .select()
+            .select({
+                id: store.id,
+                email: store.email,
+                businessType: store.businessType,
+                stripeAccountId: store.stripeAccountId,
+            })
             .from(store)
-            .where(eq(store.ownerId, session.user.id))
+            .where(
+                and(
+                    eq(store.ownerId, session.user.id),
+                    eq(store.status, "approved"),
+                ),
+            )
             .limit(1);
 
         if (!sellerStore) {
             return NextResponse.json(
-                { message: "Store not found" },
-                { status: 404 },
+                { message: "Approved store not found" },
+                { status: 403 },
             );
         }
+
         let stripeAccountId = sellerStore.stripeAccountId;
+
         if (!stripeAccountId) {
             const account = await stripe.accounts.create({
                 type: "express",
-                email: session.user.email,
-                business_type: "individual",
+                email: sellerStore.email || session.user.email,
+                business_type:
+                    sellerStore.businessType === "company"
+                        ? "company"
+                        : "individual",
+                metadata: {
+                    storeId: sellerStore.id,
+                    ownerId: session.user.id,
+                },
             });
 
             stripeAccountId = account.id;
 
             await db
                 .update(store)
-                .set({
-                    stripeAccountId,
-                })
+                .set({ stripeAccountId })
                 .where(eq(store.id, sellerStore.id));
         }
-        const accountLink =
-            await stripe.accountLinks.create({
-                account: stripeAccountId,
-                refresh_url:
-                    `${process.env.NEXT_PUBLIC_APP_URL}/seller/settings?refresh=true`,
-                return_url:
-                    `${process.env.NEXT_PUBLIC_APP_URL}/seller/settings?success=true`,
-                type: "account_onboarding",
-            });
+
+        const origin = new URL(request.url).origin;
+        const accountLink = await stripe.accountLinks.create({
+            account: stripeAccountId,
+            refresh_url: `${origin}/seller/settings?stripe=refresh`,
+            return_url: `${origin}/seller/settings?stripe=success`,
+            type: "account_onboarding",
+        });
 
         return NextResponse.json({
             success: true,
             url: accountLink.url,
         });
     } catch (error) {
-        console.error(error);
+        console.error("STRIPE_CONNECT_ERROR:", error);
 
         return NextResponse.json(
             {
                 success: false,
-                message: "Unable to connect Stripe.",
+                message: "Unable to connect Stripe",
             },
             { status: 500 },
         );

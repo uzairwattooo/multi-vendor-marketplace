@@ -1,76 +1,95 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
+import { Building2 } from "lucide-react";
+import type { UseFormReturn } from "react-hook-form";
+
 import { Input } from "@/components/ui/input";
+import type { StoreSettingsInput } from "@/lib/validations/store";
+import {
+    FormField,
+    nativeSelectClassName,
+    SettingsSection,
+} from "./SettingsSection";
 
-export default function BusinessInformation() {
+type BusinessInformationProps = {
+    form: UseFormReturn<StoreSettingsInput>;
+};
+
+export default function BusinessInformation({
+    form,
+}: BusinessInformationProps) {
     return (
-        <section className="rounded-2xl border bg-card p-6 shadow-sm">
-            <div className="mb-6">
-                <h2 className="text-xl font-semibold">
-                    Business Information
-                </h2>
-
-                <p className="mt-1 text-sm text-muted-foreground">
-                    Update your legal business information.
-                </p>
-            </div>
-
-            <div className="grid gap-5 md:grid-cols-2">
-                <div>
-                    <label className="mb-2 block text-sm font-medium">
-                        Business Type
-                    </label>
-
-                    <select className="h-10 w-full rounded-md border bg-background px-3 text-sm">
-                        <option value="individual">
-                            Individual
-                        </option>
-
-                        <option value="company">
-                            Company
-                        </option>
+        <SettingsSection
+            icon={Building2}
+            title="Business information"
+            description="Add optional legal and tax information for your business records."
+        >
+            <div className="grid gap-6 md:grid-cols-2">
+                <FormField
+                    label="Business type"
+                    htmlFor="businessType"
+                    error={form.formState.errors.businessType?.message}
+                >
+                    <select
+                        id="businessType"
+                        className={nativeSelectClassName}
+                        {...form.register("businessType")}
+                    >
+                        <option value="individual">Individual</option>
+                        <option value="company">Company</option>
                     </select>
-                </div>
+                </FormField>
 
-                <div>
-                    <label className="mb-2 block text-sm font-medium">
-                        Business Name
-                    </label>
+                <FormField
+                    label="Legal business name"
+                    htmlFor="businessName"
+                    error={form.formState.errors.businessName?.message}
+                >
+                    <Input
+                        id="businessName"
+                        placeholder="ABC Traders"
+                        {...form.register("businessName")}
+                    />
+                </FormField>
 
-                    <Input placeholder="ABC Traders" />
-                </div>
+                <FormField
+                    label="Registration number"
+                    htmlFor="registrationNumber"
+                    error={form.formState.errors.registrationNumber?.message}
+                >
+                    <Input
+                        id="registrationNumber"
+                        placeholder="REG-123456"
+                        {...form.register("registrationNumber")}
+                    />
+                </FormField>
 
-                <div>
-                    <label className="mb-2 block text-sm font-medium">
-                        Registration Number
-                    </label>
+                <FormField
+                    label="NTN"
+                    htmlFor="ntn"
+                    error={form.formState.errors.ntn?.message}
+                >
+                    <Input
+                        id="ntn"
+                        placeholder="1234567-8"
+                        {...form.register("ntn")}
+                    />
+                </FormField>
 
-                    <Input placeholder="REG-123456" />
-                </div>
-
-                <div>
-                    <label className="mb-2 block text-sm font-medium">
-                        NTN Number
-                    </label>
-
-                    <Input placeholder="1234567-8" />
-                </div>
-
-                <div className="md:col-span-2">
-                    <label className="mb-2 block text-sm font-medium">
-                        STRN (Optional)
-                    </label>
-
-                    <Input placeholder="Sales Tax Registration Number" />
-                </div>
+                <FormField
+                    label="STRN"
+                    htmlFor="strn"
+                    error={form.formState.errors.strn?.message}
+                    hint="Optional sales tax registration number."
+                    className="md:col-span-2"
+                >
+                    <Input
+                        id="strn"
+                        placeholder="Sales tax registration number"
+                        {...form.register("strn")}
+                    />
+                </FormField>
             </div>
-
-            <div className="mt-6 flex justify-end">
-                <Button>
-                    Save Changes
-                </Button>
-            </div>
-        </section>
+        </SettingsSection>
     );
 }

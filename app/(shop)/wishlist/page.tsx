@@ -51,7 +51,7 @@ export default async function WishlistPage() {
 
                     <p className="mt-3 max-w-md text-muted-foreground">
                         Save your favourite products here and purchase them
-                        whenever you're ready.
+                        whenever you&apos;re ready.
                     </p>
 
                     <Button

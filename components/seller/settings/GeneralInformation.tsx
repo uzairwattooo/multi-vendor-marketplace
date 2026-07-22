@@ -1,69 +1,109 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
+import { Globe2, Store } from "lucide-react";
+import type { UseFormReturn } from "react-hook-form";
+
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import type { StoreSettingsInput } from "@/lib/validations/store";
+import {
+    FormField,
+    nativeSelectClassName,
+    SettingsSection,
+} from "./SettingsSection";
 
-export default function GeneralInformation() {
+const categories = [
+    "Electronics",
+    "Fashion",
+    "Home & Living",
+    "Beauty & Personal Care",
+    "Sports & Fitness",
+    "Books & Stationery",
+    "Kids & Toys",
+    "Food & Grocery",
+    "Other",
+];
+
+type GeneralInformationProps = {
+    form: UseFormReturn<StoreSettingsInput>;
+    slug: string;
+};
+
+export default function GeneralInformation({
+    form,
+    slug,
+}: GeneralInformationProps) {
+    const description = form.watch("description");
+
     return (
-        <section className="rounded-2xl border bg-card p-6 shadow-sm">
-            <h2 className="mb-6 text-xl font-semibold">
-                General Information
-            </h2>
-
-            <div className="grid gap-5 md:grid-cols-2">
-                <div>
-                    <label className="mb-2 block text-sm font-medium">
-                        Store Name
-                    </label>
-
-                    <Input placeholder="Tech Store" />
-                </div>
-
-                <div>
-                    <label className="mb-2 block text-sm font-medium">
-                        Store Slug
-                    </label>
-
-                    <Input placeholder="tech-store" />
-                </div>
-
-                <div>
-                    <label className="mb-2 block text-sm font-medium">
-                        Business Email
-                    </label>
-
+        <SettingsSection
+            icon={Store}
+            title="Store information"
+            description="Manage the main information customers see across the marketplace."
+        >
+            <div className="grid gap-6 md:grid-cols-2">
+                <FormField
+                    label="Store name"
+                    htmlFor="name"
+                    error={form.formState.errors.name?.message}
+                >
                     <Input
-                        type="email"
-                        placeholder="store@email.com"
+                        id="name"
+                        placeholder="e.g. Uzair Tech Store"
+                        {...form.register("name")}
                     />
-                </div>
+                </FormField>
 
-                <div>
-                    <label className="mb-2 block text-sm font-medium">
-                        Business Phone
-                    </label>
+                <FormField
+                    label="Store category"
+                    htmlFor="category"
+                    error={form.formState.errors.category?.message}
+                >
+                    <select
+                        id="category"
+                        className={nativeSelectClassName}
+                        {...form.register("category")}
+                    >
+                        <option value="">Select a category</option>
+                        {categories.map((category) => (
+                            <option key={category} value={category}>
+                                {category}
+                            </option>
+                        ))}
+                    </select>
+                </FormField>
 
-                    <Input placeholder="+92xxxxxxxxxx" />
-                </div>
+                <FormField
+                    label="Store URL"
+                    htmlFor="slug"
+                    hint="The slug is generated automatically by the backend when the store name changes."
+                    className="md:col-span-2"
+                >
+                    <div className="flex h-9 items-center gap-2 rounded-md border bg-muted/40 px-3 text-sm text-muted-foreground">
+                        <Globe2 className="size-4 shrink-0" />
+                        <span className="truncate">/stores/{slug}</span>
+                    </div>
+                </FormField>
 
-                <div className="md:col-span-2">
-                    <label className="mb-2 block text-sm font-medium">
-                        Description
-                    </label>
-
+                <FormField
+                    label="Store description"
+                    htmlFor="description"
+                    error={form.formState.errors.description?.message}
+                    className="md:col-span-2"
+                >
                     <Textarea
-                        rows={5}
-                        placeholder="Tell customers about your store..."
+                        id="description"
+                        rows={7}
+                        placeholder="Describe your products, customers and what makes your store different."
+                        {...form.register("description")}
                     />
-                </div>
+                    <div className="flex justify-end">
+                        <span className="text-xs text-muted-foreground">
+                            {description.length}/1000
+                        </span>
+                    </div>
+                </FormField>
             </div>
-
-            <div className="mt-6 flex justify-end">
-                <Button>
-                    Save Changes
-                </Button>
-            </div>
-        </section>
+        </SettingsSection>
     );
 }

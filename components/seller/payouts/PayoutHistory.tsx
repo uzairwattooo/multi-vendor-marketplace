@@ -1,13 +1,6 @@
-import {
-    CheckCircle2,
-    Clock3,
-    XCircle,
-} from "lucide-react";
-
+import {CheckCircle2,Clock3,} from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { getPayoutHistory } from "@/lib/actions/seller/get-payout-history";
-
-
 
 
 export default async function PayoutHistory() {
