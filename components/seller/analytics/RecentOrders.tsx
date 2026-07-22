@@ -65,7 +65,7 @@ export default async function RecentOrders() {
                 </Button>
             </div>
 
-            <div className="overflow-x-auto">
+            <div className="overflow-x-auto hide-scrollbar ">
                 <table className="w-full">
                     <thead className="bg-muted/40">
                         <tr className="border-b">

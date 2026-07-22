@@ -25,7 +25,7 @@ export default function AdminSidebar() {
                 </div>
             </div>
 
-            <nav className="flex-1 space-y-6 overflow-y-auto px-4 py-5">
+            <nav className="flex-1 space-y-6 overflow-y-auto hide-scrollbar  px-4 py-5">
                 {adminNavigation.map((group) => (
                     <div key={group.label}>
                         <p className="mb-2 px-3 text-[10px] font-semibold uppercase tracking-[0.18em] text-zinc-500">

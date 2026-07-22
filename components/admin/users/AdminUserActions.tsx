@@ -138,7 +138,7 @@ export default function AdminUserActions({
             </Button>
 
             <Dialog open={open} onOpenChange={setOpen}>
-                <DialogContent className="max-h-[90vh] max-w-2xl overflow-y-auto p-0">
+                <DialogContent className="max-h-[90vh] max-w-2xl overflow-y-auto hide-scrollbar  p-0">
                     <DialogHeader className="border-b px-6 py-5">
                         <DialogTitle className="text-lg">
                             Manage {userName}

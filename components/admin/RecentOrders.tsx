@@ -90,7 +90,7 @@ export default function RecentOrders({
                     </p>
                 </div>
             ) : (
-                <div className="overflow-x-auto">
+                <div className="overflow-x-auto hide-scrollbar ">
                     <table className="w-full min-w-[820px]">
                         <thead>
                             <tr className="border-b bg-muted/35 text-left text-xs text-muted-foreground">

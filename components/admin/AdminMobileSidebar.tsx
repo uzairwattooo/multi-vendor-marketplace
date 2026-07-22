@@ -37,7 +37,7 @@ export default function AdminMobileSidebar() {
 
             <SheetContent
                 side="left"
-                className="w-[310px] gap-0 overflow-y-auto bg-[#111827] p-0 text-white sm:max-w-[340px]"
+                className="w-[310px] gap-0 overflow-y-auto hide-scrollbar  bg-[#111827] p-0 text-white sm:max-w-[340px]"
             >
                 <SheetHeader className="border-b border-white/10 px-5 py-5 text-left">
                     <SheetTitle className="text-white">

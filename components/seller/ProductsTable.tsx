@@ -191,7 +191,7 @@ export default function ProductsTable() {
                     </p>
                 </div>
             ) : (
-                <div className="overflow-x-auto rounded-2xl border bg-card shadow-sm">
+                <div className="overflow-x-auto hide-scrollbar  rounded-2xl border bg-card shadow-sm">
                     <table className="w-full min-w-[850px]">
                         <thead className="border-b bg-muted/50">
                             <tr>

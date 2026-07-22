@@ -243,7 +243,7 @@ export default function NavbarClient({
 
                         <SheetContent
                             side="right"
-                            className="w-[320px] overflow-y-auto p-0 sm:w-[380px]"
+                            className="w-[320px] overflow-y-auto hide-scrollbar  p-0 sm:w-[380px]"
                         >
                             <SheetHeader className="border-b px-6 py-5 text-left">
                                 <SheetTitle>

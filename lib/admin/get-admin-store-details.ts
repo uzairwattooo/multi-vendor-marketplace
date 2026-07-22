@@ -1,6 +1,13 @@
-import { and, desc, eq, sql } from "drizzle-orm";
+import {
+    and,
+    count,
+    desc,
+    eq,
+    ne,
+    sql,
+} from "drizzle-orm";
 import { db } from "@/db";
-import { order, payment, product, store, user,} from "@/db/schema";
+import { order, payment, product, store, user, } from "@/db/schema";
 
 export async function getAdminStoreDetails(storeId: string) {
     const [storeProfile] = await db
@@ -52,130 +59,190 @@ export async function getAdminStoreDetails(storeId: string) {
         return null;
     }
 
-    const [metricsResult, recentOrders, recentProducts] =
-        await Promise.all([
-            db
-                .select({
-                    products: sql<number>`(
-                        SELECT COUNT(*)
-                        FROM ${product}
-                        WHERE ${product.storeId} = ${storeId}
-                    )`,
-                    activeProducts: sql<number>`(
-                        SELECT COUNT(*)
-                        FROM ${product}
-                        WHERE ${product.storeId} = ${storeId}
-                        AND ${product.status} = 'active'
-                    )`,
-                    lowStockProducts: sql<number>`(
-                        SELECT COUNT(*)
-                        FROM ${product}
-                        WHERE ${product.storeId} = ${storeId}
-                        AND ${product.stock} <= ${product.lowStockThreshold}
+    const [
+        productMetricsRows,
+        orderMetricsRows,
+        paymentMetricsRows,
+        recentOrders,
+        recentProducts,
+    ] = await Promise.all([
+        db
+            .select({
+                products: count(),
+
+                activeProducts: sql<string>`
+                COUNT(*) FILTER (
+                    WHERE ${product.status} = 'active'
+                )
+            `,
+
+                lowStockProducts: sql<string>`
+                COUNT(*) FILTER (
+                    WHERE
+                        ${product.stock} <= ${product.lowStockThreshold}
                         AND ${product.status} != 'archived'
-                    )`,
-                    orders: sql<number>`(
-                        SELECT COUNT(*)
-                        FROM ${order}
-                        WHERE ${order.storeId} = ${storeId}
-                    )`,
-                    deliveredOrders: sql<number>`(
-                        SELECT COUNT(*)
-                        FROM ${order}
-                        WHERE ${order.storeId} = ${storeId}
-                        AND ${order.status} = 'delivered'
-                    )`,
-                    grossRevenue: sql<string>`(
-                        SELECT COALESCE(SUM(${order.totalAmount}), 0)
-                        FROM ${order}
-                        WHERE ${order.storeId} = ${storeId}
-                        AND ${order.paymentStatus} = 'paid'
-                    )`,
-                    platformFees: sql<string>`(
-                        SELECT COALESCE(SUM(${payment.platformFee}), 0)
-                        FROM ${payment}
-                        INNER JOIN ${order}
-                            ON ${order.id} = ${payment.orderId}
-                        WHERE ${order.storeId} = ${storeId}
-                        AND ${payment.status} = 'paid'
-                    )`,
-                    sellerEarnings: sql<string>`(
-                        SELECT COALESCE(SUM(${payment.sellerAmount}), 0)
-                        FROM ${payment}
-                        INNER JOIN ${order}
-                            ON ${order.id} = ${payment.orderId}
-                        WHERE ${order.storeId} = ${storeId}
-                        AND ${payment.status} = 'paid'
-                    )`,
-                    pendingPayout: sql<string>`(
-                        SELECT COALESCE(SUM(${payment.sellerAmount}), 0)
-                        FROM ${payment}
-                        INNER JOIN ${order}
-                            ON ${order.id} = ${payment.orderId}
-                        WHERE ${order.storeId} = ${storeId}
-                        AND ${payment.status} = 'paid'
-                        AND ${payment.sellerPayoutStatus} = 'pending'
-                    )`,
-                })
-                .from(store)
-                .where(eq(store.id, storeId)),
+                )
+            `,
+            })
+            .from(product)
+            .where(eq(product.storeId, storeId)),
 
-            db
-                .select({
-                    id: order.id,
-                    orderNumber: order.orderNumber,
-                    buyerName: user.name,
-                    status: order.status,
-                    paymentStatus: order.paymentStatus,
-                    paymentMethod: order.paymentMethod,
-                    totalAmount: order.totalAmount,
-                    createdAt: order.createdAt,
-                })
-                .from(order)
-                .innerJoin(user, eq(user.id, order.buyerId))
-                .where(eq(order.storeId, storeId))
-                .orderBy(desc(order.createdAt))
-                .limit(8),
+        db
+            .select({
+                orders: count(),
 
-            db
-                .select({
-                    id: product.id,
-                    name: product.name,
-                    slug: product.slug,
-                    sku: product.sku,
-                    category: product.category,
-                    price: product.price,
-                    salePrice: product.salePrice,
-                    stock: product.stock,
-                    lowStockThreshold: product.lowStockThreshold,
-                    status: product.status,
-                    featured: product.featured,
-                    createdAt: product.createdAt,
-                })
-                .from(product)
-                .where(eq(product.storeId, storeId))
-                .orderBy(desc(product.createdAt))
-                .limit(8),
-        ]);
+                deliveredOrders: sql<string>`
+                COUNT(*) FILTER (
+                    WHERE ${order.status} = 'delivered'
+                )
+            `,
 
-    const metrics = metricsResult[0];
+                grossRevenue: sql<string>`
+                COALESCE(
+                    SUM(
+                        CASE
+                            WHEN ${order.paymentStatus} = 'paid'
+                            THEN ${order.totalAmount}
+                            ELSE 0
+                        END
+                    ),
+                    0
+                )
+            `,
+            })
+            .from(order)
+            .where(eq(order.storeId, storeId)),
+
+        db
+            .select({
+                platformFees: sql<string>`
+                COALESCE(
+                    SUM(${payment.platformFee}),
+                    0
+                )
+            `,
+
+                sellerEarnings: sql<string>`
+                COALESCE(
+                    SUM(${payment.sellerAmount}),
+                    0
+                )
+            `,
+
+                pendingPayout: sql<string>`
+                COALESCE(
+                    SUM(
+                        CASE
+                            WHEN ${payment.sellerPayoutStatus} = 'pending'
+                            THEN ${payment.sellerAmount}
+                            ELSE 0
+                        END
+                    ),
+                    0
+                )
+            `,
+            })
+            .from(payment)
+            .innerJoin(
+                order,
+                eq(payment.orderId, order.id),
+            )
+            .where(
+                and(
+                    eq(order.storeId, storeId),
+                    eq(payment.status, "paid"),
+                ),
+            ),
+
+        db
+            .select({
+                id: order.id,
+                orderNumber: order.orderNumber,
+                buyerName: user.name,
+                status: order.status,
+                paymentStatus: order.paymentStatus,
+                paymentMethod: order.paymentMethod,
+                totalAmount: order.totalAmount,
+                createdAt: order.createdAt,
+            })
+            .from(order)
+            .innerJoin(
+                user,
+                eq(user.id, order.buyerId),
+            )
+            .where(eq(order.storeId, storeId))
+            .orderBy(desc(order.createdAt))
+            .limit(8),
+
+        db
+            .select({
+                id: product.id,
+                name: product.name,
+                slug: product.slug,
+                sku: product.sku,
+                category: product.category,
+                price: product.price,
+                salePrice: product.salePrice,
+                stock: product.stock,
+                lowStockThreshold:
+                    product.lowStockThreshold,
+                status: product.status,
+                featured: product.featured,
+                createdAt: product.createdAt,
+            })
+            .from(product)
+            .where(eq(product.storeId, storeId))
+            .orderBy(desc(product.createdAt))
+            .limit(8),
+    ]);
+
+    const productMetrics =
+        productMetricsRows[0];
+
+    const orderMetrics =
+        orderMetricsRows[0];
+
+    const paymentMetrics =
+        paymentMetricsRows[0];
 
     return {
         store: storeProfile,
         metrics: {
-            products: Number(metrics?.products ?? 0),
-            activeProducts: Number(metrics?.activeProducts ?? 0),
+            products: Number(
+                productMetrics?.products ?? 0,
+            ),
+
+            activeProducts: Number(
+                productMetrics?.activeProducts ?? 0,
+            ),
+
             lowStockProducts: Number(
-                metrics?.lowStockProducts ?? 0,
+                productMetrics?.lowStockProducts ?? 0,
             ),
-            orders: Number(metrics?.orders ?? 0),
+
+            orders: Number(
+                orderMetrics?.orders ?? 0,
+            ),
+
             deliveredOrders: Number(
-                metrics?.deliveredOrders ?? 0,
+                orderMetrics?.deliveredOrders ?? 0,
             ),
-            grossRevenue: Number(metrics?.grossRevenue ?? 0),
-            platformFees: Number(metrics?.platformFees ?? 0),
-            sellerEarnings: Number(metrics?.sellerEarnings ?? 0),
-            pendingPayout: Number(metrics?.pendingPayout ?? 0),
+
+            grossRevenue: Number(
+                orderMetrics?.grossRevenue ?? 0,
+            ),
+
+            platformFees: Number(
+                paymentMetrics?.platformFees ?? 0,
+            ),
+
+            sellerEarnings: Number(
+                paymentMetrics?.sellerEarnings ?? 0,
+            ),
+
+            pendingPayout: Number(
+                paymentMetrics?.pendingPayout ?? 0,
+            ),
         },
         recentOrders,
         recentProducts,

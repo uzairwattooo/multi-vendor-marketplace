@@ -301,7 +301,7 @@ export default function StoreSettingsClient({
 
             <div className="grid gap-6 lg:grid-cols-[280px_minmax(0,1fr)]">
                 <aside className="lg:sticky lg:top-5 lg:self-start">
-                    <nav className="flex gap-2 overflow-x-auto rounded-2xl border bg-card p-2 shadow-sm lg:flex-col lg:overflow-visible">
+                    <nav className="flex gap-2 overflow-x-auto hide-scrollbar rounded-2xl border bg-card p-2 shadow-sm lg:flex-col lg:overflow-visible">
                         {sections.map((section) => {
                             const Icon = section.icon;
                             const active = activeSection === section.id;
