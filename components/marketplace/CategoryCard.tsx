@@ -1,36 +1,32 @@
 import Link from "next/link";
-import type { LucideIcon } from "lucide-react";
+import { ArrowUpRight } from "lucide-react";
 
-type CategoryCardProps = {
-    name: string;
-    slug: string;
-    productCount: number;
-    icon: LucideIcon;
-};
+import type { MarketplaceCategory } from "@/types/marketplace-home";
 
 export default function CategoryCard({
-    name,
-    slug,
-    productCount,
-    icon: Icon,
-}: CategoryCardProps) {
-    return (
-        <Link
-            href={`/products?category=${slug}`}
-            className="group rounded-2xl border bg-white p-6 transition hover:-translate-y-1 hover:shadow-lg"
-        >
-            <div className="flex size-14 items-center justify-center rounded-2xl bg-primary/10 text-primary">
-                <Icon className="size-7" />
-            </div>
+  name,
+  productCount,
+  icon: Icon,
+}: MarketplaceCategory) {
+  return (
+    <Link
+      href={`/products?category=${encodeURIComponent(name)}`}
+      className="group rounded-3xl border bg-card p-5 transition-all duration-300 hover:-translate-y-1 hover:border-primary/40 hover:shadow-lg hover:shadow-black/5"
+    >
+      <div className="flex items-start justify-between gap-4">
+        <div className="flex size-12 items-center justify-center rounded-2xl bg-primary/10 text-primary transition-transform duration-300 group-hover:scale-105">
+          <Icon className="size-5" />
+        </div>
 
-            <h3 className="mt-5 text-lg font-semibold">
-                {name}
-            </h3>
+        <ArrowUpRight className="size-4 text-muted-foreground transition-all duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-primary" />
+      </div>
 
-            <p className="mt-1 text-sm text-muted-foreground">
-                {productCount}{" "}
-                {productCount === 1 ? "product" : "products"}
-            </p>
-        </Link>
-    );
+      <h3 className="mt-5 truncate font-semibold">{name}</h3>
+
+      <p className="mt-1 text-xs text-muted-foreground">
+        {productCount.toLocaleString()}{" "}
+        {productCount === 1 ? "product" : "products"}
+      </p>
+    </Link>
+  );
 }

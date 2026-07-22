@@ -25,7 +25,7 @@ type PaymentSettingsProps = {
 
 async function fetchStripeStatus(): Promise<StripeConnectionStatus> {
     const response = await fetch("/api/stripe/status", {
-        cache: "no-store",
+        cache: "no-store"
     });
     const data = (await response.json()) as
         | StripeConnectionStatus
@@ -172,8 +172,8 @@ export default function PaymentSettings({
                                     {status.connected
                                         ? "Ready for payments"
                                         : status.hasAccount
-                                          ? "Setup incomplete"
-                                          : "Not connected"}
+                                            ? "Setup incomplete"
+                                            : "Not connected"}
                                 </Badge>
                             </div>
 

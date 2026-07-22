@@ -8,10 +8,12 @@ import * as schema from "./schema";
 const connectionString = process.env.DATABASE_URL;
 
 if (!connectionString) {
-    throw new Error("DATABASE_URL is missing");
+    throw new Error(
+        "DATABASE_URL is missing",
+    );
 }
 
-const globalForDatabase = globalThis as unknown as {
+const globalForDatabase = globalThis as typeof globalThis & {
     postgresClient?: ReturnType<typeof postgres>;
 };
 
@@ -19,18 +21,17 @@ const client =
     globalForDatabase.postgresClient ??
     postgres(connectionString, {
         prepare: false,
-        max: 1,
-        idle_timeout: 10,
-        connect_timeout: 10,
+        max: Number(
+            process.env.DB_POOL_MAX ?? 5,
+        ),
+
+        idle_timeout: 30,
+        connect_timeout: 30,
+        max_lifetime: 60 * 30,
     });
 
-if (process.env.NODE_ENV !== "production") {
-    globalForDatabase.postgresClient = client;
-}
+globalForDatabase.postgresClient = client;
 
-export const db = drizzle(
-    client,
-    {
-        schema,
-    }
-);
+export const db = drizzle(client, {
+    schema,
+});

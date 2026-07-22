@@ -1,162 +1,154 @@
-"use client";
-
-import Link from "next/link";
-import { Heart, ShoppingCart, Star, } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import AddToCartButton from "./AddToCartButton";
-import type { MarketplaceProduct } from "@/types/product";
 import Image from "next/image";
-import { useTransition } from "react";
-import { toggleWishlist } from "@/lib/wishlist/add-to-wishlist";
-import { toast } from "sonner";
-import { useRouter } from "next/navigation";
+import Link from "next/link";
+import {
+    ArrowRight,
+    Heart,
+    PackageOpen,
+    Store,
+} from "lucide-react";
+
+import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import type { MarketplaceProduct } from "@/types/marketplace-home";
 
-
-type ProductCardProps = MarketplaceProduct & {
-    badge?: string;
-    imageClassName?: string;
-};
-
+function formatPrice(amount: number) {
+    return new Intl.NumberFormat("en-PK", {
+        style: "currency",
+        currency: "PKR",
+        maximumFractionDigits: 0,
+    }).format(amount);
+}
 
 export default function ProductCard({
-    id,
     name,
     slug,
-    storeId,
+    category,
+    brand,
     storeName,
+    storeSlug,
     price,
     salePrice,
     stock,
     image,
-    rating = 0,
-    reviewCount = 0,
+    isWishlisted = false,
     badge,
-    isWishlisted,
-    imageClassName = "bg-gradient-to-br from-violet-100 to-violet-200",
-}: ProductCardProps) {
-    const [isPending, startTransition] = useTransition();
-    const router = useRouter()
-    const handleWishlist = () => {
-        startTransition(async () => {
+}: MarketplaceProduct) {
+    const currentPrice =
+        salePrice !== null && salePrice < price
+            ? salePrice
+            : price;
 
-            const result = await toggleWishlist(id);
+    const discount =
+        salePrice !== null && salePrice < price
+            ? Math.round(((price - salePrice) / price) * 100)
+            : 0;
 
-            if (!result.success) {
-                toast.error(result.message);
-                return;
-            }
-
-            toast.success(
-                result.action === "added"
-                    ? "Added to wishlist"
-                    : "Removed from wishlist"
-            );
-
-            router.refresh();
-        });
-    };
-    const displayPrice = salePrice ?? price;
     return (
-        <article className="group overflow-hidden rounded-2xl border bg-card transition-all duration-300 hover:-translate-y-1 hover:shadow-lg">
-            <div
-                className={`relative aspect-[4/3] overflow-hidden ${imageClassName}`}
-            >
-                <Link
-                    href={`/products/${slug}`}
-                    aria-label={`View ${name}`}
-                    className="absolute inset-0"
-                >
-                    {image ? (
-                        <div className="relative h-full w-full">
-                            <Image
-                                src={image}
-                                alt={name}
-                                fill
-                                className="object-cover transition duration-300 group-hover:scale-105"
-                                sizes="(max-width: 768px) 100vw, 33vw"
-                            />
-                        </div>
-                    ) : (
-                        <div className="flex h-full items-center justify-center">
-                            <ShoppingCart className="size-14 text-primary/20 transition duration-300 group-hover:scale-110" />
-                        </div>
-                    )}
-                </Link>
-
-                {badge && (
-                    <span className="absolute left-3 top-3 rounded-full bg-primary px-3 py-1 text-xs font-semibold text-primary-foreground">
-                        {badge}
-                    </span>
+        <article className="group overflow-hidden rounded-3xl border bg-card transition-all duration-300 hover:-translate-y-1 hover:border-primary/35 hover:shadow-xl hover:shadow-black/5">
+            <div className="relative aspect-[4/3] overflow-hidden bg-muted">
+                {image ? (
+                    <Image
+                        src={image}
+                        alt={name}
+                        fill
+                        sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw p-4"
+                        className="object-cover transition-transform duration-500 group-hover:scale-105"
+                    />
+                ) : (
+                    <div className="flex h-full items-center justify-center">
+                        <PackageOpen className="size-12 text-muted-foreground/35" />
+                    </div>
                 )}
 
-                <Button
-                    size="icon"
-                    variant="ghost"
-                    onClick={handleWishlist}
-                    disabled={isPending}
-                    className="absolute right-3 top-3 z-10 rounded-full bg-white/90 hover:bg-white"
-                >
-                    <Heart
-                        className={cn(
-                            "size-5 transition-colors",
-                            isWishlisted
-                                ? "fill-red-500 text-red-500"
-                                : "text-gray-600"
-                        )}
-                    />
-                </Button>
-            </div>
+                <div className="absolute left-3 top-3 flex flex-wrap gap-2">
+                    {badge && (
+                        <span className="rounded-full bg-foreground px-3 py-1 text-[11px] font-semibold text-background shadow-sm">
+                            {badge}
+                        </span>
+                    )}
 
-            <div className="p-5">
-                <Link href={`/products/${slug}`}>
-                    <h3 className="line-clamp-2 min-h-12 text-base font-semibold transition hover:text-primary">
-                        {name}
-                    </h3>
-                </Link>
-
-                <p className="mt-2 text-sm text-muted-foreground">
-                    {storeName}
-                </p>
-
-                <div className="mt-3 flex items-center gap-1">
-                    <Star className="size-4 fill-amber-400 text-amber-400" />
-
-                    <span className="text-sm font-medium">
-                        {rating}
-                    </span>
-
-                    <span className="text-sm text-muted-foreground">
-                        ({reviewCount})
-                    </span>
-                </div>
-
-                <div className="mt-4 flex items-center gap-2">
-                    <span className="text-lg font-bold">
-                        Rs. {displayPrice.toLocaleString()}
-                    </span>
-
-                    {salePrice && (
-                        <span className="text-sm text-muted-foreground line-through">
-                            Rs. {price.toLocaleString()}
+                    {discount > 0 && (
+                        <span className="rounded-full bg-primary px-3 py-1 text-[11px] font-bold text-primary-foreground shadow-sm">
+                            -{discount}%
                         </span>
                     )}
                 </div>
 
-                <div className="mt-4">
-                    <AddToCartButton
-                        product={{
-                            productId: id,
-                            name,
-                            slug,
-                            image,
-                            price: displayPrice,
-                            stock,
-                            storeId,
-                            storeName,
-                        }}
+                <Link
+                    href="/wishlist"
+                    aria-label="Open wishlist"
+                    className="absolute right-3 top-3 flex size-9 items-center justify-center rounded-full border bg-background/90 shadow-sm backdrop-blur transition-colors hover:bg-background"
+                >
+                    <Heart
+                        className={cn(
+                            "size-4",
+                            isWishlisted && "fill-current text-red-500",
+                        )}
                     />
+                </Link>
+            </div>
+
+            <div className="p-5">
+                <div className="flex items-center gap-2 text-[11px] font-medium uppercase tracking-wide text-muted-foreground">
+                    <span className="truncate">{category}</span>
+
+                    {brand && (
+                        <>
+                            <span aria-hidden="true">•</span>
+                            <span className="truncate">{brand}</span>
+                        </>
+                    )}
                 </div>
+
+                <Link href={`/products/${slug}`}>
+                    <h3 className="mt-2 line-clamp-2 min-h-12 text-base font-semibold leading-6 transition-colors group-hover:text-primary">
+                        {name}
+                    </h3>
+                </Link>
+
+                <Link
+                    href={`/stores/${storeSlug}`}
+                    className="mt-3 flex items-center gap-2 text-xs text-muted-foreground transition-colors hover:text-foreground"
+                >
+                    <Store className="size-3.5 shrink-0" />
+                    <span className="truncate">{storeName}</span>
+                </Link>
+
+                <div className="mt-5 flex items-end justify-between gap-4">
+                    <div>
+                        <p className="text-lg font-bold">
+                            {formatPrice(currentPrice)}
+                        </p>
+
+                        {discount > 0 && (
+                            <p className="mt-0.5 text-xs text-muted-foreground line-through">
+                                {formatPrice(price)}
+                            </p>
+                        )}
+                    </div>
+
+                    <span
+                        className={cn(
+                            "rounded-full px-2.5 py-1 text-[11px] font-semibold",
+                            stock > 0
+                                ? "bg-emerald-500/10 text-emerald-700 dark:text-emerald-400"
+                                : "bg-destructive/10 text-destructive",
+                        )}
+                    >
+                        {stock > 0 ? "In stock" : "Out of stock"}
+                    </span>
+                </div>
+
+                <Link
+                    href={`/products/${slug}`}
+                    className={cn(
+                        buttonVariants({ variant: "outline" }),
+                        "mt-5 w-full gap-2 rounded-xl",
+                    )}
+                >
+                    View Product
+                    <ArrowRight className="size-4" />
+                </Link>
             </div>
         </article>
     );
