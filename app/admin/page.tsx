@@ -21,7 +21,8 @@ import TopStores from "@/components/admin/TopStores";
 import { buttonVariants } from "@/components/ui/button";
 import { getAdminDashboard } from "@/lib/admin/get-admin-dashboard";
 import { cn } from "@/lib/utils";
-
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
 function formatMoney(
     value: number,
     currency: string,
