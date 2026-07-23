@@ -1,6 +1,6 @@
 import { desc, eq, sql } from "drizzle-orm";
 import { db } from "@/db";
-import {order,session,store,user,wishlist,} from "@/db/schema";
+import { order, session, store, user, wishlist, } from "@/db/schema";
 
 export async function getAdminUserDetails(userId: string) {
     const [profile] = await db

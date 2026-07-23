@@ -81,7 +81,7 @@ export default function CreateUserDialog() {
                 <DialogContent className="max-w-xl p-0">
                     <DialogHeader className="border-b px-6 py-5">
                         <div className="flex items-center gap-3">
-                            <div className="flex size-10 items-center justify-center rounded-xl bg-primary/10 text-primary">
+                            <div className="flex size-10 items-center px-3 justify-center rounded-xl bg-primary/10 text-primary">
                                 <UserPlus className="size-5" />
                             </div>
 

@@ -117,7 +117,7 @@ export default async function AdminUsersPage({
                 />
             </div>
 
-            <form className="grid gap-3 rounded-3xl border bg-card p-4 shadow-sm lg:grid-cols-[minmax(220px,1fr)_repeat(4,170px)_auto]">
+            <form className="grid gap-3 rounded-3xl border bg-card p-4 shadow-sm lg:grid-cols-[minmax(175px,1fr)_repeat(4,170px)_auto]">
                 <input
                     type="search"
                     name="q"
@@ -171,7 +171,7 @@ export default async function AdminUsersPage({
                     type="submit"
                     className={cn(
                         buttonVariants(),
-                        "h-10 rounded-xl px-5",
+                        "h-10 rounded-xl px-2",
                     )}
                 >
                     Apply

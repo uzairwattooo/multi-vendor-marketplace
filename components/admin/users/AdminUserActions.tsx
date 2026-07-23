@@ -158,7 +158,7 @@ export default function AdminUserActions({
 
                         <section className="rounded-2xl border p-5">
                             <div className="flex items-start gap-3">
-                                <div className="flex size-10 items-center justify-center rounded-xl bg-violet-500/10 text-violet-600">
+                                <div className="flex size-10 px-3 items-center justify-center rounded-xl bg-violet-500/10 text-violet-600">
                                     <ShieldCheck className="size-5" />
                                 </div>
                                 <div>
@@ -223,7 +223,7 @@ export default function AdminUserActions({
 
                         <section className="rounded-2xl border p-5">
                             <div className="flex items-start gap-3">
-                                <div className="flex size-10 items-center justify-center rounded-xl bg-sky-500/10 text-sky-600">
+                                <div className="flex size-10 items-center justify-center px-3 rounded-xl bg-sky-500/10 text-sky-600">
                                     <UserRound className="size-5" />
                                 </div>
                                 <div>
@@ -287,7 +287,7 @@ export default function AdminUserActions({
 
                         <section className="rounded-2xl border p-5">
                             <div className="flex items-start gap-3">
-                                <div className="flex size-10 items-center justify-center rounded-xl bg-amber-500/10 text-amber-600">
+                                <div className="flex size-10 items-center justify-center px-3 rounded-xl bg-amber-500/10 text-amber-600">
                                     <KeyRound className="size-5" />
                                 </div>
                                 <div>
@@ -335,7 +335,7 @@ export default function AdminUserActions({
                             <section className="rounded-2xl border p-5">
                                 <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                                     <div className="flex items-start gap-3">
-                                        <div className="flex size-10 items-center justify-center rounded-xl bg-emerald-500/10 text-emerald-600">
+                                        <div className="flex size-10 items-center justify-center px-3 rounded-xl bg-emerald-500/10 text-emerald-600">
                                             <BadgeCheck className="size-5" />
                                         </div>
                                         <div>
@@ -369,7 +369,7 @@ export default function AdminUserActions({
                         <section className="rounded-2xl border p-5">
                             <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                                 <div className="flex items-start gap-3">
-                                    <div className="flex size-10 items-center justify-center rounded-xl bg-blue-500/10 text-blue-600">
+                                    <div className="flex size-10 items-center justify-center px-3 rounded-xl bg-blue-500/10 text-blue-600">
                                         <LogOut className="size-5" />
                                     </div>
                                     <div>
@@ -401,7 +401,7 @@ export default function AdminUserActions({
 
                         <section className="rounded-2xl border border-destructive/20 bg-destructive/5 p-5">
                             <div className="flex items-start gap-3">
-                                <div className="flex size-10 items-center justify-center rounded-xl bg-destructive/10 text-destructive">
+                                <div className="flex size-10 items-center justify-center px-3 rounded-xl bg-destructive/10 text-destructive">
                                     <Ban className="size-5" />
                                 </div>
                                 <div>

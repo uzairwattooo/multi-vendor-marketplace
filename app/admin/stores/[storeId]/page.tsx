@@ -392,7 +392,7 @@ export default async function AdminStoreDetailsPage({
                 )}
 
             <div className="grid gap-6 2xl:grid-cols-2">
-                <section className="overflow-hidden rounded-3xl border bg-card shadow-sm">
+                <section className="overflow-hiddenrounded-3xl border bg-card shadow-sm">
                     <div className="border-b px-6 py-5">
                         <h2 className="text-lg font-semibold">
                             Recent products
@@ -436,7 +436,7 @@ export default async function AdminStoreDetailsPage({
                                             <span
                                                 className={
                                                     currentProduct.stock <=
-                                                    currentProduct.lowStockThreshold
+                                                        currentProduct.lowStockThreshold
                                                         ? "font-semibold text-amber-700 dark:text-amber-400"
                                                         : "font-medium"
                                                 }
@@ -447,7 +447,7 @@ export default async function AdminStoreDetailsPage({
                                         <TableCell className="px-6 font-semibold">
                                             {formatMoney(
                                                 currentProduct.salePrice ??
-                                                    currentProduct.price,
+                                                currentProduct.price,
                                             )}
                                         </TableCell>
                                     </TableRow>
@@ -461,7 +461,7 @@ export default async function AdminStoreDetailsPage({
                     )}
                 </section>
 
-                <section className="overflow-hidden rounded-3xl border bg-card shadow-sm">
+                <section className="overflow-hiddenrounded-3xl border bg-card shadow-sm">
                     <div className="border-b px-6 py-5">
                         <h2 className="text-lg font-semibold">
                             Recent orders

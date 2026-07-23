@@ -117,8 +117,8 @@ export default function AdminStoreActions({
             </Button>
 
             <Dialog open={open} onOpenChange={setOpen}>
-                <DialogContent className="max-w-xl p-0">
-                    <DialogHeader className="border-b px-6 py-5">
+    <DialogContent className="w-full max-w-4xl p-0">
+        <DialogHeader className="border-b px-6 py-5">
                         <DialogTitle className="text-lg">
                             Manage {storeName}
                         </DialogTitle>
@@ -127,20 +127,20 @@ export default function AdminStoreActions({
                         </DialogDescription>
                     </DialogHeader>
 
-                    <div className="space-y-4 px-6 py-6">
+                    <div className="space-y-4 px-6 py-6 overflow-y-auto max-h-[80vh]">
                         {(status === "pending" ||
                             status === "rejected") && (
-                            <ActionCard
-                                icon={CheckCircle2}
-                                title="Approve store"
-                                description="Publish the store and grant the owner seller access."
-                                actionLabel="Approve Store"
-                                onClick={() =>
-                                    runAction({ action: "approve" })
-                                }
-                                disabled={mutation.isPending}
-                            />
-                        )}
+                                <ActionCard
+                                    icon={CheckCircle2}
+                                    title="Approve store"
+                                    description="Publish the store and grant the owner seller access."
+                                    actionLabel="Approve Store"
+                                    onClick={() =>
+                                        runAction({ action: "approve" })
+                                    }
+                                    disabled={mutation.isPending}
+                                />
+                            )}
 
                         {status === "pending" && (
                             <ActionCard
@@ -224,15 +224,15 @@ export default function AdminStoreActions({
                                             runAction(
                                                 reasonAction === "reject"
                                                     ? {
-                                                          action: "reject",
-                                                          reason:
-                                                              reason.trim(),
-                                                      }
+                                                        action: "reject",
+                                                        reason:
+                                                            reason.trim(),
+                                                    }
                                                     : {
-                                                          action: "suspend",
-                                                          reason:
-                                                              reason.trim(),
-                                                      },
+                                                        action: "suspend",
+                                                        reason:
+                                                            reason.trim(),
+                                                    },
                                             )
                                         }
                                         disabled={
@@ -290,7 +290,7 @@ function ActionCard({
     disabled,
 }: ActionCardProps) {
     return (
-        <div className="flex flex-col gap-4 rounded-2xl border p-5 sm:flex-row sm:items-center sm:justify-between">
+        <div className="rounded-2xl border p-5">
             <div className="flex items-start gap-3">
                 <div
                     className={
@@ -302,23 +302,28 @@ function ActionCard({
                     <Icon className="size-5" />
                 </div>
 
-                <div>
-                    <h3 className="font-semibold">{title}</h3>
-                    <p className="mt-1 max-w-sm text-sm leading-6 text-muted-foreground">
+                <div className="min-w-0">
+                    <h3 className="font-semibold">
+                        {title}
+                    </h3>
+
+                    <p className="mt-1 text-sm leading-6 text-muted-foreground">
                         {description}
                     </p>
                 </div>
             </div>
 
-            <Button
-                type="button"
-                variant={variant}
-                onClick={onClick}
-                disabled={disabled}
-                className="shrink-0"
-            >
-                {actionLabel}
-            </Button>
+            <div className="mt-5 border-t pt-4">
+                <Button
+                    type="button"
+                    variant={variant}
+                    onClick={onClick}
+                    disabled={disabled}
+                    className="w-full sm:w-auto"
+                >
+                    {actionLabel}
+                </Button>
+            </div>
         </div>
     );
 }

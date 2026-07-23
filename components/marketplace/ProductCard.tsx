@@ -1,12 +1,18 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 import {
     ArrowRight,
     Heart,
+    Loader2,
     PackageOpen,
     Store,
 } from "lucide-react";
-
+import { toast } from "sonner";
+import { toggleWishlist } from "@/lib/wishlist/toggle-wishlist";
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import type { MarketplaceProduct } from "@/types/marketplace-home";
@@ -19,7 +25,12 @@ function formatPrice(amount: number) {
     }).format(amount);
 }
 
+type ProductCardProps = MarketplaceProduct & {
+    id: string;
+};
+
 export default function ProductCard({
+    id,
     name,
     slug,
     category,
@@ -32,7 +43,15 @@ export default function ProductCard({
     image,
     isWishlisted = false,
     badge,
-}: MarketplaceProduct) {
+}: ProductCardProps) {
+    const router = useRouter();
+
+    const [wishlisted, setWishlisted] =
+        useState(isWishlisted);
+
+    const [wishlistLoading, setWishlistLoading] =
+        useState(false);
+
     const currentPrice =
         salePrice !== null && salePrice < price
             ? salePrice
@@ -40,115 +59,203 @@ export default function ProductCard({
 
     const discount =
         salePrice !== null && salePrice < price
-            ? Math.round(((price - salePrice) / price) * 100)
+            ? Math.round(
+                ((price - salePrice) / price) * 100,
+            )
             : 0;
 
-    return (
-        <article className="group overflow-hidden rounded-3xl border bg-card transition-all duration-300 hover:-translate-y-1 hover:border-primary/35 hover:shadow-xl hover:shadow-black/5">
-            <div className="relative aspect-[4/3] overflow-hidden bg-muted">
-                {image ? (
-                    <Image
-                        src={image}
-                        alt={name}
-                        fill
-                        sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw p-4"
-                        className="object-cover transition-transform duration-500 group-hover:scale-105"
-                    />
-                ) : (
-                    <div className="flex h-full items-center justify-center">
-                        <PackageOpen className="size-12 text-muted-foreground/35" />
-                    </div>
-                )}
+    async function handleWishlist() {
+        if (wishlistLoading) return;
 
-                <div className="absolute left-3 top-3 flex flex-wrap gap-2">
+        const previousValue = wishlisted;
+
+        setWishlisted(!previousValue);
+        setWishlistLoading(true);
+
+        try {
+            const result = await toggleWishlist(id);
+
+            if (!result.success) {
+                setWishlisted(previousValue);
+
+                if (result.message === "Unauthorized") {
+                    toast.error(
+                        "Please login to add products to wishlist",
+                    );
+
+                    router.push("/auth/login");
+                    return;
+                }
+
+                throw new Error(
+                    result.message ||
+                    "Unable to update wishlist",
+                );
+            }
+
+            const added = result.action === "added";
+
+            setWishlisted(added);
+
+            toast.success(
+                added
+                    ? "Product added to wishlist"
+                    : "Product removed from wishlist",
+            );
+
+            router.refresh();
+        } catch (error) {
+            setWishlisted(previousValue);
+
+            toast.error(
+                error instanceof Error
+                    ? error.message
+                    : "Unable to update wishlist",
+            );
+        } finally {
+            setWishlistLoading(false);
+        }
+    }
+
+    return (
+        <article className="group flex h-full flex-col overflow-hidden rounded-[22px] border bg-card shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-primary/40 hover:shadow-xl">
+            <div className="relative overflow-hidden bg-muted/40">
+                <Link
+                    href={`/products/${slug}`}
+                    className="relative block aspect-square"
+                >
+                    {image ? (
+                        <Image
+                            src={image}
+                            alt={name}
+                            fill
+                            sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
+                            className="object-contain p-5 transition-transform duration-500 group-hover:scale-[1.04]"
+                        />
+                    ) : (
+                        <div className="flex h-full items-center justify-center">
+                            <PackageOpen className="size-12 text-muted-foreground/30" />
+                        </div>
+                    )}
+                </Link>
+
+                <div className="pointer-events-none absolute left-3 top-3 flex flex-wrap gap-2">
                     {badge && (
-                        <span className="rounded-full bg-foreground px-3 py-1 text-[11px] font-semibold text-background shadow-sm">
+                        <span className="rounded-lg bg-foreground px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wide text-background shadow-sm">
                             {badge}
                         </span>
                     )}
 
                     {discount > 0 && (
-                        <span className="rounded-full bg-primary px-3 py-1 text-[11px] font-bold text-primary-foreground shadow-sm">
+                        <span className="rounded-lg bg-primary px-2.5 py-1 text-[10px] font-bold text-primary-foreground shadow-sm">
                             -{discount}%
                         </span>
                     )}
                 </div>
 
-                <Link
-                    href="/wishlist"
-                    aria-label="Open wishlist"
-                    className="absolute right-3 top-3 flex size-9 items-center justify-center rounded-full border bg-background/90 shadow-sm backdrop-blur transition-colors hover:bg-background"
+                <button
+                    type="button"
+                    onClick={handleWishlist}
+                    disabled={wishlistLoading}
+                    aria-label={
+                        wishlisted
+                            ? "Remove from wishlist"
+                            : "Add to wishlist"
+                    }
+                    className={cn(
+                        "absolute right-3 top-3 z-10 flex size-10 items-center justify-center rounded-full border bg-background/95 shadow-sm backdrop-blur transition-all hover:scale-105",
+                        wishlisted &&
+                        "border-red-200 bg-red-50 text-red-500",
+                    )}
                 >
-                    <Heart
-                        className={cn(
-                            "size-4",
-                            isWishlisted && "fill-current text-red-500",
-                        )}
-                    />
-                </Link>
+                    {wishlistLoading ? (
+                        <Loader2 className="size-4 animate-spin" />
+                    ) : (
+                        <Heart
+                            className={cn(
+                                "size-[18px]",
+                                wishlisted &&
+                                "fill-current text-red-500",
+                            )}
+                        />
+                    )}
+                </button>
             </div>
 
-            <div className="p-5">
-                <div className="flex items-center gap-2 text-[11px] font-medium uppercase tracking-wide text-muted-foreground">
-                    <span className="truncate">{category}</span>
+            <div className="flex flex-1 flex-col p-4">
+                <div className="flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">
+                    <span className="truncate">
+                        {category}
+                    </span>
 
                     {brand && (
                         <>
-                            <span aria-hidden="true">•</span>
-                            <span className="truncate">{brand}</span>
+                            <span>•</span>
+                            <span className="truncate">
+                                {brand}
+                            </span>
                         </>
                     )}
                 </div>
 
                 <Link href={`/products/${slug}`}>
-                    <h3 className="mt-2 line-clamp-2 min-h-12 text-base font-semibold leading-6 transition-colors group-hover:text-primary">
+                    <h3 className="mt-2 line-clamp-2 min-h-11 text-[15px] font-semibold leading-[22px] text-foreground transition-colors group-hover:text-primary">
                         {name}
                     </h3>
                 </Link>
 
                 <Link
                     href={`/stores/${storeSlug}`}
-                    className="mt-3 flex items-center gap-2 text-xs text-muted-foreground transition-colors hover:text-foreground"
+                    className="mt-2 flex items-center gap-1.5 text-xs text-muted-foreground transition-colors hover:text-foreground"
                 >
                     <Store className="size-3.5 shrink-0" />
-                    <span className="truncate">{storeName}</span>
+
+                    <span className="truncate">
+                        {storeName}
+                    </span>
                 </Link>
 
-                <div className="mt-5 flex items-end justify-between gap-4">
-                    <div>
-                        <p className="text-lg font-bold">
-                            {formatPrice(currentPrice)}
-                        </p>
-
-                        {discount > 0 && (
-                            <p className="mt-0.5 text-xs text-muted-foreground line-through">
-                                {formatPrice(price)}
+                <div className="mt-auto pt-4">
+                    <div className="flex items-end justify-between gap-3">
+                        <div className="min-w-0">
+                            <p className="text-lg font-bold leading-none">
+                                {formatPrice(currentPrice)}
                             </p>
-                        )}
+
+                            {discount > 0 && (
+                                <p className="mt-1.5 text-xs text-muted-foreground line-through">
+                                    {formatPrice(price)}
+                                </p>
+                            )}
+                        </div>
+
+                        <span
+                            className={cn(
+                                "shrink-0 rounded-lg px-2 py-1 text-[10px] font-semibold",
+                                stock > 0
+                                    ? "bg-emerald-500/10 text-emerald-700 dark:text-emerald-400"
+                                    : "bg-destructive/10 text-destructive",
+                            )}
+                        >
+                            {stock > 0
+                                ? "In Stock"
+                                : "Out of Stock"}
+                        </span>
                     </div>
 
-                    <span
+                    <Link
+                        href={`/products/${slug}`}
                         className={cn(
-                            "rounded-full px-2.5 py-1 text-[11px] font-semibold",
-                            stock > 0
-                                ? "bg-emerald-500/10 text-emerald-700 dark:text-emerald-400"
-                                : "bg-destructive/10 text-destructive",
+                            buttonVariants({
+                                variant: "outline",
+                            }),
+                            "mt-4 w-full justify-between rounded-xl",
                         )}
                     >
-                        {stock > 0 ? "In stock" : "Out of stock"}
-                    </span>
+                        View Product
+                        <ArrowRight className="size-4" />
+                    </Link>
                 </div>
-
-                <Link
-                    href={`/products/${slug}`}
-                    className={cn(
-                        buttonVariants({ variant: "outline" }),
-                        "mt-5 w-full gap-2 rounded-xl",
-                    )}
-                >
-                    View Product
-                    <ArrowRight className="size-4" />
-                </Link>
             </div>
         </article>
     );

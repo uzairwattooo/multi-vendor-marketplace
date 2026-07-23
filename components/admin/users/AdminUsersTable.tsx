@@ -62,7 +62,7 @@ export default function AdminUsersTable({
     }
 
     return (
-        <div className="overflow-hidden rounded-3xl border bg-card shadow-sm">
+        <div className="overflow-hiddenrounded-3xl border bg-card shadow-sm">
             <Table>
                 <TableHeader>
                     <TableRow className="bg-muted/50 hover:bg-muted/50">
@@ -102,10 +102,10 @@ export default function AdminUsersTable({
                                             </p>
                                             {currentUser.id ===
                                                 currentAdminId && (
-                                                <span className="rounded-full bg-primary/10 px-2 py-0.5 text-[10px] font-semibold text-primary">
-                                                    You
-                                                </span>
-                                            )}
+                                                    <span className="rounded-full bg-primary/10 px-2 py-0.5 text-[10px] font-semibold text-primary">
+                                                        You
+                                                    </span>
+                                                )}
                                         </div>
                                         <p className="mt-1 truncate text-xs text-muted-foreground">
                                             {currentUser.email}
@@ -152,7 +152,7 @@ export default function AdminUsersTable({
 
                             <TableCell>
                                 {currentUser.storeId &&
-                                currentUser.storeName ? (
+                                    currentUser.storeName ? (
                                     <Link
                                         href={`/admin/stores/${currentUser.storeId}`}
                                         className="group inline-flex max-w-[170px] items-center gap-2 text-sm font-medium hover:text-primary"

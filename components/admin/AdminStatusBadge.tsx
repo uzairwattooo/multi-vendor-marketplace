@@ -10,14 +10,30 @@ const statusClasses: Record<string, string> = {
         "bg-emerald-500/10 text-emerald-700 ring-emerald-500/20 dark:text-emerald-400",
     active:
         "bg-emerald-500/10 text-emerald-700 ring-emerald-500/20 dark:text-emerald-400",
+    healthy:
+        "bg-emerald-500/10 text-emerald-700 ring-emerald-500/20 dark:text-emerald-400",
     paid:
         "bg-emerald-500/10 text-emerald-700 ring-emerald-500/20 dark:text-emerald-400",
     verified:
         "bg-emerald-500/10 text-emerald-700 ring-emerald-500/20 dark:text-emerald-400",
+    tracked:
+        "bg-emerald-500/10 text-emerald-700 ring-emerald-500/20 dark:text-emerald-400",
     pending:
+        "bg-amber-500/10 text-amber-700 ring-amber-500/20 dark:text-amber-400",
+    draft:
+        "bg-amber-500/10 text-amber-700 ring-amber-500/20 dark:text-amber-400",
+    low_stock:
         "bg-amber-500/10 text-amber-700 ring-amber-500/20 dark:text-amber-400",
     processing:
         "bg-blue-500/10 text-blue-700 ring-blue-500/20 dark:text-blue-400",
+    confirmed:
+        "bg-blue-500/10 text-blue-700 ring-blue-500/20 dark:text-blue-400",
+    shipped:
+        "bg-indigo-500/10 text-indigo-700 ring-indigo-500/20 dark:text-indigo-400",
+    delivered:
+        "bg-emerald-500/10 text-emerald-700 ring-emerald-500/20 dark:text-emerald-400",
+    featured:
+        "bg-violet-500/10 text-violet-700 ring-violet-500/20 dark:text-violet-400",
     seller:
         "bg-violet-500/10 text-violet-700 ring-violet-500/20 dark:text-violet-400",
     admin:
@@ -30,8 +46,20 @@ const statusClasses: Record<string, string> = {
         "bg-destructive/10 text-destructive ring-destructive/20",
     banned:
         "bg-destructive/10 text-destructive ring-destructive/20",
+    failed:
+        "bg-destructive/10 text-destructive ring-destructive/20",
+    cancelled:
+        "bg-destructive/10 text-destructive ring-destructive/20",
+    out_of_stock:
+        "bg-destructive/10 text-destructive ring-destructive/20",
+    archived:
+        "bg-zinc-500/10 text-zinc-700 ring-zinc-500/20 dark:text-zinc-300",
     unverified:
         "bg-zinc-500/10 text-zinc-700 ring-zinc-500/20 dark:text-zinc-300",
+    not_tracked:
+        "bg-zinc-500/10 text-zinc-700 ring-zinc-500/20 dark:text-zinc-300",
+    refunded:
+        "bg-orange-500/10 text-orange-700 ring-orange-500/20 dark:text-orange-400",
 };
 
 export default function AdminStatusBadge({
