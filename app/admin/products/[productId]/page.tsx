@@ -242,11 +242,16 @@ export default async function AdminProductDetailsPage({
                                             key={image.id}
                                             className="flex size-20 shrink-0 items-center justify-center overflow-hidden rounded-2xl border bg-muted/30"
                                         >
-                                            <img
-                                                src={image.url}
-                                                alt={image.altText ?? product.name}
-                                                className="size-full object-cover"
-                                            />
+                                            <div className="relative size-full min-h-[320px]">
+                                                <Image
+                                                    src={primaryImage.url}
+                                                    alt={primaryImage.altText ?? product.name}
+                                                    fill
+                                                    sizes="(max-width: 1024px) 100vw, 360px"
+                                                    className="rounded-2xl object-contain"
+                                                    priority
+                                                />
+                                            </div>
                                         </div>
                                     ))}
                                 </div>
