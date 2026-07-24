@@ -156,11 +156,10 @@ export default async function AdminProductDetailsPage({
 
             <div className="grid gap-6 xl:grid-cols-[minmax(0,1.25fr)_420px]">
                 <div className="space-y-6">
-                    <section className="overflow-hidden rounded-3xl border bg-card shadow-sm">
+                    <section className="overflow-x-auto hide-scrollbar rounded-3xl border bg-card shadow-sm">
                         <div className="grid gap-0 lg:grid-cols-[360px_minmax(0,1fr)]">
                             <div className="flex min-h-[360px] items-center justify-center border-b bg-muted/30 p-6 lg:border-b-0 lg:border-r">
                                 {primaryImage ? (
-                                    // eslint-disable-next-line @next/next/no-img-element
                                     <img
                                         src={primaryImage.url}
                                         alt={
@@ -239,7 +238,6 @@ export default async function AdminProductDetailsPage({
                                             key={image.id}
                                             className="flex size-20 shrink-0 items-center justify-center overflow-hidden rounded-2xl border bg-muted/30"
                                         >
-                                            {/* eslint-disable-next-line @next/next/no-img-element */}
                                             <img
                                                 src={image.url}
                                                 alt={image.altText ?? product.name}

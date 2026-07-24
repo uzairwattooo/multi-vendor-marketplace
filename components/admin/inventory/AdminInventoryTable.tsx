@@ -347,7 +347,7 @@ export default function AdminInventoryTable({
                     }
                 }}
             >
-                <DialogContent className="w-full max-w-2xl p-0">
+                <DialogContent className="w-full max-w-2xl p-0 overflow-hidden">
                     <form onSubmit={handleSubmit}>
                         <DialogHeader className="border-b px-6 py-5">
                             <DialogTitle>
@@ -442,7 +442,7 @@ export default function AdminInventoryTable({
                             </div>
                         </div>
 
-                        <DialogFooter className="border-t px-6 py-4">
+                        <DialogFooter className="border-t px-6 pb-8 pt-4">
                             <Button
                                 type="button"
                                 variant="outline"
