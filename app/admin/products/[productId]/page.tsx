@@ -20,6 +20,7 @@ import AdminStatCard from "@/components/admin/AdminStatCard";
 import { buttonVariants } from "@/components/ui/button";
 import { getAdminProductDetails } from "@/lib/admin/get-admin-product-details";
 import { cn } from "@/lib/utils";
+import Image from "next/image";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -160,13 +161,16 @@ export default async function AdminProductDetailsPage({
                         <div className="grid gap-0 lg:grid-cols-[360px_minmax(0,1fr)]">
                             <div className="flex min-h-[360px] items-center justify-center border-b bg-muted/30 p-6 lg:border-b-0 lg:border-r">
                                 {primaryImage ? (
-                                    <img
-                                        src={primaryImage.url}
-                                        alt={
-                                            primaryImage.altText ?? product.name
-                                        }
-                                        className="max-h-[420px] w-full rounded-2xl object-contain"
-                                    />
+                                    <div className="relative size-full min-h-[320px]">
+                                        <Image
+                                            src={primaryImage.url}
+                                            alt={primaryImage.altText ?? product.name}
+                                            fill
+                                            sizes="(max-width: 1024px) 100vw, 360px"
+                                            className="rounded-2xl object-contain"
+                                            priority
+                                        />
+                                    </div>
                                 ) : (
                                     <div className="text-center text-muted-foreground">
                                         <ImageIcon className="mx-auto size-10" />
@@ -186,7 +190,7 @@ export default async function AdminProductDetailsPage({
                                         <p className="mt-2 text-3xl font-bold">
                                             {formatCurrency(
                                                 product.salePrice ??
-                                                    product.price,
+                                                product.price,
                                             )}
                                         </p>
                                         {product.salePrice !== null && (

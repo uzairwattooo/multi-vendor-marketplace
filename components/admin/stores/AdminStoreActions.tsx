@@ -123,7 +123,7 @@ export default function AdminStoreActions({
                             Manage {storeName}
                         </DialogTitle>
                         <DialogDescription>
-                            Review and change this store's marketplace status.
+                            Review and change this store&apos;s marketplace status.
                         </DialogDescription>
                     </DialogHeader>
 

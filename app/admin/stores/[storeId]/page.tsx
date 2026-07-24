@@ -9,7 +9,6 @@ import {
     CreditCard,
     ExternalLink,
     FileText,
-    Globe2,
     Landmark,
     Mail,
     MapPin,

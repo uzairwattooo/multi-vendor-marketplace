@@ -342,7 +342,7 @@ export default function AdminProductEditForm({
                                     required
                                 />
                                 <p className="text-xs leading-5 text-muted-foreground">
-                                    SKU must remain unique inside this product's
+                                    SKU must remain unique inside this product&apos;s
                                     store.
                                 </p>
                             </div>

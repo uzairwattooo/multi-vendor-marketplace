@@ -12,6 +12,7 @@ import AdminProductActions from "@/components/admin/products/AdminProductActions
 import { buttonVariants } from "@/components/ui/button";
 import type { AdminProductListItem } from "@/lib/admin/get-admin-products";
 import { cn } from "@/lib/utils";
+import Image from "next/image";
 
 function formatCurrency(value: number) {
     return new Intl.NumberFormat("en-PK", {
@@ -72,7 +73,7 @@ export default function AdminProductsTable({
                             const lowStock =
                                 currentProduct.stock > 0 &&
                                 currentProduct.stock <=
-                                    currentProduct.lowStockThreshold;
+                                currentProduct.lowStockThreshold;
 
                             return (
                                 <tr
@@ -83,9 +84,12 @@ export default function AdminProductsTable({
                                         <div className="flex min-w-0 items-center gap-3">
                                             <div className="flex size-14 shrink-0 items-center justify-center overflow-hidden rounded-2xl border bg-muted/50">
                                                 {currentProduct.image ? (
-                                                    <img
+                                                    <Image
                                                         src={currentProduct.image}
                                                         alt={currentProduct.name}
+                                                        width={56}
+                                                        height={56}
+                                                        sizes="56px"
                                                         className="size-full object-cover"
                                                     />
                                                 ) : (
@@ -140,7 +144,7 @@ export default function AdminProductsTable({
                                         <p className="font-semibold">
                                             {formatCurrency(
                                                 currentProduct.salePrice ??
-                                                    currentProduct.price,
+                                                currentProduct.price,
                                             )}
                                         </p>
                                         {currentProduct.salePrice !== null && (
@@ -155,7 +159,7 @@ export default function AdminProductsTable({
                                             className={cn(
                                                 "font-semibold",
                                                 currentProduct.stock <= 0 &&
-                                                    "text-destructive",
+                                                "text-destructive",
                                                 lowStock && "text-amber-600",
                                             )}
                                         >

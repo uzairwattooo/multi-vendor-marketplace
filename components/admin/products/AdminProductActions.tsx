@@ -18,10 +18,10 @@ import {
 import type { LucideIcon } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState, type ComponentType } from "react";
+import { useState} from "react";
 import { toast } from "sonner";
 
-import { Button, buttonVariants } from "@/components/ui/button";
+import { Button } from "@/components/ui/button";
 import {
     Dialog,
     DialogContent,
@@ -133,7 +133,7 @@ export default function AdminProductActions({
 
             <Dialog open={open} onOpenChange={setOpen}>
                 <DialogContent className="max-h-[92vh] w-[calc(100%-24px)] overflow-hidden rounded-[28px] border-0 p-0 shadow-2xl sm:max-w-[980px]">
-                    {/* Header */}
+                 
                     <DialogHeader className="relative border-b bg-gradient-to-r from-slate-50 via-white to-slate-50 px-6 py-6 pr-16 sm:px-8">
                         <div className="flex items-start gap-4">
                             <div className="flex size-12 shrink-0 items-center justify-center rounded-2xl bg-slate-950 text-white shadow-sm">
@@ -183,9 +183,8 @@ export default function AdminProductActions({
                         </div>
                     </DialogHeader>
 
-                    {/* Body */}
                     <div className="grid max-h-[68vh] overflow-y-auto lg:grid-cols-[280px_minmax(0,1fr)]">
-                        {/* Left summary panel */}
+
                         <aside className="border-b bg-slate-50/70 p-6 lg:border-r lg:border-b-0 lg:p-7">
                             <div className="rounded-2xl border bg-white p-5 shadow-sm">
                                 <div className="flex size-14 items-center justify-center rounded-2xl bg-slate-100 text-slate-700">
@@ -246,8 +245,6 @@ export default function AdminProductActions({
                                 </div>
                             </div>
                         </aside>
-
-                        {/* Right actions */}
                         <section className="p-6 sm:p-7">
                             <div>
                                 <p className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-400">
@@ -436,7 +433,6 @@ export default function AdminProductActions({
                         </section>
                     </div>
 
-                    {/* Footer */}
                     <DialogFooter className="flex-row items-center justify-between gap-3 border-t bg-white px-6 py-4 sm:px-8">
                         <div className="min-w-0">
                             {mutation.isPending ? (

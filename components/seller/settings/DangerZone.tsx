@@ -41,7 +41,7 @@ export default function DangerZone() {
                         </label>
                         <Textarea
                             rows={4}
-                            placeholder="We'll be back soon..."
+                            placeholder="We&apos;ll be back soon..."
                         />
                     </div>
                 </div>

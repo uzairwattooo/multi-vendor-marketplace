@@ -174,7 +174,7 @@ export default function AdminUserActions({
 
                             {storeStatus !== "approved" && (
                                 <p className="mt-4 rounded-xl bg-muted/50 px-3 py-2 text-xs text-muted-foreground">
-                                    Seller access is enabled automatically after the user's store is approved.
+                                    Seller access is enabled automatically after the user&apos;s store is approved.
                                 </p>
                             )}
 
@@ -231,7 +231,7 @@ export default function AdminUserActions({
                                         Profile details
                                     </h3>
                                     <p className="mt-1 text-sm text-muted-foreground">
-                                        Correct the user's display name or phone number.
+                                        Correct the user&apos;s display name or phone number.
                                     </p>
                                 </div>
                             </div>
@@ -295,7 +295,7 @@ export default function AdminUserActions({
                                         Reset password
                                     </h3>
                                     <p className="mt-1 text-sm text-muted-foreground">
-                                        Set a new password for this user's credential account.
+                                        Set a new password for this user&apos;s credential account.
                                     </p>
                                 </div>
                             </div>
@@ -433,7 +433,7 @@ export default function AdminUserActions({
                                 <div className="mt-4 space-y-4">
                                     {storeStatus === "approved" && (
                                         <p className="rounded-xl border border-amber-500/20 bg-amber-500/10 px-3 py-2 text-xs text-amber-800 dark:text-amber-300">
-                                            Suspend this user's approved store before banning the seller account.
+                                            Suspend this user&apos;s approved store before banning the seller account.
                                         </p>
                                     )}
 

@@ -6,7 +6,6 @@ import {
     CalendarDays,
     Heart,
     Mail,
-    MapPin,
     MonitorSmartphone,
     Phone,
     ShoppingBag,

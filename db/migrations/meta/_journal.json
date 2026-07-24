@@ -169,6 +169,13 @@
       "when": 1784695851429,
       "tag": "0023_fantastic_dark_beast",
       "breakpoints": true
+    },
+    {
+      "idx": 24,
+      "version": "7",
+      "when": 1784892511228,
+      "tag": "0024_glossy_robin_chapel",
+      "breakpoints": true
     }
   ]
 }

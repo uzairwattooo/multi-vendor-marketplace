@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 import BuyerSidebar from "@/components/buyer/BuyerSidebar";
 import { cn } from "@/lib/utils";
@@ -19,16 +19,15 @@ export default function BuyerShell({
     user,
     children,
 }: BuyerShellProps) {
-    const [collapsed, setCollapsed] = useState(false);
+    const [collapsed, setCollapsed] = useState(() => {
+        if (typeof window === "undefined") return false;
 
-    useEffect(() => {
-        const savedState = window.localStorage.getItem(
-            SIDEBAR_STORAGE_KEY,
+        return (
+            window.localStorage.getItem(
+                SIDEBAR_STORAGE_KEY,
+            ) === "true"
         );
-
-        setCollapsed(savedState === "true");
-    }, []);
-
+    });
     function toggleSidebar() {
         setCollapsed((currentState) => {
             const nextState = !currentState;

@@ -36,6 +36,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import Image from "next/image";
 
 type CategoryItem = {
     id: string;
@@ -264,9 +265,12 @@ export default function AdminCategoriesClient({
                                             <div className="flex items-center gap-3">
                                                 <div className="flex size-12 shrink-0 items-center justify-center overflow-hidden rounded-2xl border bg-muted/50">
                                                     {currentCategory.image ? (
-                                                        <img
+                                                        <Image
                                                             src={currentCategory.image}
                                                             alt={currentCategory.name}
+                                                            width={48}
+                                                            height={48}
+                                                            sizes="48px"
                                                             className="size-full object-cover"
                                                         />
                                                     ) : (

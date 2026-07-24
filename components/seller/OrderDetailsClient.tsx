@@ -162,7 +162,6 @@ export default function OrderDetailsClient({
 
     return (
         <div className="space-y-6">
-            {/* Header */}
             <section className="relative overflow-hidden rounded-3xl border bg-card p-6 shadow-sm sm:p-8">
                 <div className="absolute -right-20 -top-20 size-64 rounded-full bg-primary/10 blur-3xl" />
 
@@ -206,8 +205,6 @@ export default function OrderDetailsClient({
                     </div>
                 </div>
             </section>
-
-            {/* Customer and address */}
             <section className="grid gap-6 lg:grid-cols-2">
                 <article className="rounded-3xl border bg-card p-6 shadow-sm">
                     <div className="mb-6 flex items-center gap-3">
@@ -321,8 +318,6 @@ export default function OrderDetailsClient({
                     )}
                 </article>
             </section>
-
-            {/* Payment and status */}
             <section className="rounded-3xl border bg-card p-6 shadow-sm">
                 <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                     <div className="flex items-center gap-3">
@@ -423,8 +418,6 @@ export default function OrderDetailsClient({
                     </div>
                 </div>
             </section>
-
-            {/* Products */}
             <section className="overflow-hidden rounded-3xl border bg-card shadow-sm">
                 <div className="flex items-center justify-between border-b px-6 py-5">
                     <div className="flex items-center gap-3">

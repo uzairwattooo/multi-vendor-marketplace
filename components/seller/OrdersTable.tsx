@@ -154,7 +154,6 @@ export default function OrdersTable() {
 
     return (
         <div className="space-y-6">
-            {/* Page header */}
             <section className="relative overflow-hidden rounded-3xl border bg-card p-6 shadow-sm sm:p-8">
                 <div className="absolute -right-16 -top-20 size-56 rounded-full bg-primary/10 blur-3xl" />
 

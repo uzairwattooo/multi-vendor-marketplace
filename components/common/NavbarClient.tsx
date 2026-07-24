@@ -74,7 +74,6 @@ export default function NavbarClient({
         <header className="sticky top-0 z-50 border-b bg-background/90 shadow-sm backdrop-blur-xl">
             <Container>
                 <div className="flex h-[76px] items-center justify-between gap-4">
-                    {/* Logo */}
                     <Link
                         href="/"
                         className="flex shrink-0 items-center gap-2.5"
@@ -94,7 +93,6 @@ export default function NavbarClient({
                         </div>
                     </Link>
 
-                    {/* Desktop Navigation */}
                     <nav className="hidden items-center gap-1 lg:flex">
                         {links.map((link) => {
                             const active = isActiveLink(link.href);
@@ -116,7 +114,6 @@ export default function NavbarClient({
                         })}
                     </nav>
 
-                    {/* Desktop Search */}
                     <form
                         action="/products"
                         method="get"
@@ -139,9 +136,7 @@ export default function NavbarClient({
                         </button>
                     </form>
 
-                    {/* Desktop Actions */}
                     <div className="hidden shrink-0 items-center gap-2 lg:flex">
-                        {/* Search icon for medium desktop */}
                         <Link
                             href="/products"
                             aria-label="Search products"
@@ -156,7 +151,6 @@ export default function NavbarClient({
                             <Search className="size-5" />
                         </Link>
 
-                        {/* Wishlist */}
                         <Link
                             href="/wishlist"
                             aria-label="Open wishlist"
@@ -178,8 +172,6 @@ export default function NavbarClient({
                                 </span>
                             )}
                         </Link>
-
-                        {/* Cart */}
                         <Link
                             href="/cart"
                             aria-label="Open cart"
@@ -202,7 +194,6 @@ export default function NavbarClient({
                             )}
                         </Link>
 
-                        {/* User/Login */}
                         {user ? (
                             <UserMenu />
                         ) : (
@@ -219,11 +210,9 @@ export default function NavbarClient({
                             </Link>
                         )}
 
-                        {/* Role-based dashboard */}
                         <DashboardButton role={user?.role} />
                     </div>
 
-                    {/* Mobile Navigation */}
                     <Sheet
                         open={mobileOpen}
                         onOpenChange={setMobileOpen}
@@ -297,7 +286,6 @@ export default function NavbarClient({
                                     </button>
                                 </form>
 
-                                {/* Mobile Links */}
                                 <nav className="mt-6 grid gap-1.5">
                                     {links.map((link) => {
                                         const active =
@@ -323,7 +311,6 @@ export default function NavbarClient({
                                     })}
                                 </nav>
 
-                                {/* Wishlist and Cart */}
                                 <div className="mt-6 grid grid-cols-2 gap-3 border-t pt-6">
                                     <Link
                                         href="/wishlist"
@@ -366,8 +353,6 @@ export default function NavbarClient({
                                             )}
                                     </Link>
                                 </div>
-
-                                {/* Authentication */}
                                 <div className="mt-6 space-y-3 border-t pt-6">
                                     {user ? (
                                         <div className="flex items-center justify-between rounded-2xl border bg-muted/30 p-3">

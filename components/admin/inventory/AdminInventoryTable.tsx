@@ -29,6 +29,7 @@ import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import type { AdminInventoryItem } from "@/lib/admin/get-admin-inventory";
 import { cn } from "@/lib/utils";
+import Image from "next/image";
 
 type InventoryInput = {
     quantity: number;
@@ -226,9 +227,12 @@ export default function AdminInventoryTable({
                                                 <div className="flex size-12 shrink-0 items-center justify-center overflow-hidden rounded-2xl border bg-muted/50">
                                                     {item.image ? (
 
-                                                        <img
+                                                        <Image
                                                             src={item.image}
                                                             alt={item.name}
+                                                            width={48}
+                                                            height={48}
+                                                            sizes="48px"
                                                             className="size-full object-cover"
                                                         />
                                                     ) : (

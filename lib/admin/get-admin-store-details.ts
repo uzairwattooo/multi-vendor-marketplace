@@ -3,7 +3,6 @@ import {
     count,
     desc,
     eq,
-    ne,
     sql,
 } from "drizzle-orm";
 import { db } from "@/db";

@@ -27,7 +27,6 @@ export default async function WishlistPage() {
     return (
         <main className="min-h-screen bg-[#f8fafc]">
             <div className="mx-auto w-full max-w-[1500px] px-4 py-8 sm:px-6 lg:px-8 lg:py-12">
-                {/* Hero Section */}
                 <section className="relative overflow-hidden rounded-[28px] border bg-white px-6 py-8 shadow-sm sm:px-8 sm:py-10 lg:px-12">
                     <div className="absolute -right-24 -top-24 size-64 rounded-full bg-primary/10 blur-3xl" />
                     <div className="absolute -bottom-28 left-1/3 size-56 rounded-full bg-violet-100/70 blur-3xl" />
@@ -77,8 +76,6 @@ export default async function WishlistPage() {
                         </div>
                     </div>
                 </section>
-
-                {/* Products Section */}
                 {wishlist.length > 0 ? (
                     <section className="mt-8">
                         <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
@@ -140,7 +137,6 @@ export default async function WishlistPage() {
                                         key={item.id}
                                         className="group relative flex h-full flex-col overflow-hidden rounded-[22px] border border-slate-200/80 bg-white shadow-[0_8px_30px_rgba(15,23,42,0.04)] transition-all duration-300 hover:-translate-y-1 hover:border-primary/30 hover:shadow-[0_18px_45px_rgba(15,23,42,0.10)]"
                                     >
-                                        {/* Product Image */}
                                         <div className="relative overflow-hidden bg-slate-50">
                                             <Link
                                                 href={`/products/${item.slug}`}
@@ -160,7 +156,7 @@ export default async function WishlistPage() {
                                                 </div>
                                             </Link>
 
-                                            {/* Badges */}
+                                          
                                             <div className="absolute left-3 top-3 flex flex-col gap-2">
                                                 {hasSale && (
                                                     <Badge className="rounded-full border-0 bg-red-500 px-2.5 py-1 text-[11px] font-semibold text-white shadow-sm hover:bg-red-500">
@@ -176,8 +172,6 @@ export default async function WishlistPage() {
                                                     Saved
                                                 </Badge>
                                             </div>
-
-                                            {/* Quick View Overlay */}
                                             <div className="absolute inset-x-3 bottom-3 translate-y-3 opacity-0 transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100">
                                                 <Button
                                                     nativeButton={false}
@@ -193,8 +187,6 @@ export default async function WishlistPage() {
                                                 </Button>
                                             </div>
                                         </div>
-
-                                        {/* Product Content */}
                                         <div className="flex flex-1 flex-col p-5">
                                             <Link
                                                 href={`/products/${item.slug}`}
