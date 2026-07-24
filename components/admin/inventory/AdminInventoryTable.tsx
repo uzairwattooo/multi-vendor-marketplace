@@ -225,7 +225,7 @@ export default function AdminInventoryTable({
                                             <div className="flex items-center gap-3">
                                                 <div className="flex size-12 shrink-0 items-center justify-center overflow-hidden rounded-2xl border bg-muted/50">
                                                     {item.image ? (
-                                                        // eslint-disable-next-line @next/next/no-img-element
+
                                                         <img
                                                             src={item.image}
                                                             alt={item.name}
@@ -291,7 +291,7 @@ export default function AdminInventoryTable({
                                                 Alert at {item.lowStockThreshold}
                                             </p>
                                         </td>
-                                        <td className="px-5 py-4">
+                                        <td className="px-0 py-4">
                                             <div className="flex items-center gap-2">
                                                 <StockIcon
                                                     className={cn(

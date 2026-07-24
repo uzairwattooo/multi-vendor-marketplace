@@ -1,26 +1,29 @@
-import BuyerSidebar from "@/components/buyer/BuyerSidebar";
+import BuyerShell from "@/components/buyer/BuyerShell";
 import { getProfile } from "@/lib/actions/profile";
 import { notFound } from "next/navigation";
+
 export const dynamic = "force-dynamic";
+export const revalidate = 0;
 
 export default async function BuyerLayout({
     children,
-}: {
+}: Readonly<{
     children: React.ReactNode;
-}) {
+}>) {
     const user = await getProfile();
+
     if (!user) {
         notFound();
     }
-    return (
-        <div className="min-h-screen bg-muted/30">
-            <BuyerSidebar user={user} />
 
-            <main className="lg:ml-72">
-                <div className="p-8">
-                    {children}
-                </div>
-            </main>
-        </div>
+    return (
+        <BuyerShell
+            user={{
+                name: user.name,
+                image: user.image,
+            }}
+        >
+            {children}
+        </BuyerShell>
     );
 }
